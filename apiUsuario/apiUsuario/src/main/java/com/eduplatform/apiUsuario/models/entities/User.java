@@ -1,4 +1,4 @@
-package com.eduplatform.apiUsuario.entities;
+package com.eduplatform.apiUsuario.models.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private int id;
 
     private String name;
 
@@ -32,7 +32,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String active;
+    private Boolean active;
 
     
 }
