@@ -7,4 +7,5 @@ public class CursoCrear {
     private String nombreCurso;
     private String descripcion;
     private Boolean estado;
+    private int precio;
 }
