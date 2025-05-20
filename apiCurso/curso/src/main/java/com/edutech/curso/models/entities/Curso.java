@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+
 
 
 import jakarta.persistence.Column;
@@ -30,4 +30,5 @@ public class Curso {
     private String descripcion;
     @Column(nullable = false)
     private Boolean estado;
+    private int precio;
 }
