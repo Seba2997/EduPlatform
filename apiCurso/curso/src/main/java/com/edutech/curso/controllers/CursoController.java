@@ -36,7 +36,7 @@ public class CursoController {
     @GetMapping("/{id}")
     public Curso traerPorId(@PathVariable int id) {
         return cursoService.obtenerCursoPorId(id);
-}
+    }
 
     @GetMapping("/activos")
     public List<Curso> traerActivos(){
@@ -51,9 +51,9 @@ public class CursoController {
     public Curso modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body) {
     body.setId(id); 
     return cursoService.modificar(body);
-}
+    }
     
-@GetMapping("/buscar")
+    @GetMapping("/buscar")
     public List<Curso> obtenerPorNombre(@RequestParam String nombre) {
         return cursoService.obtenerPorNombre(nombre);
     }

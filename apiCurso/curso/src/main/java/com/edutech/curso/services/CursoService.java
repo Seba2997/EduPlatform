@@ -63,10 +63,13 @@ public List<Curso> obtenerPorNombre(String nombre) {
     }
     if (modificado.getDescripcion() != null) {
         curso.setDescripcion(modificado.getDescripcion());
+    }   
+    if (modificado.getEstado()!= null) {
+        curso.setEstado(modificado.getEstado());
     }    
     if (modificado.getPrecio()!= null) {
         curso.setPrecio(modificado.getPrecio());
-    }   
+    }  
     return cursoRepo.save(curso);
 }
 
