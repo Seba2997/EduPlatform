@@ -48,10 +48,10 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public Curso modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body){
-        return cursoService.modificar(body);
-
-    }
+    public Curso modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body) {
+    body.setId(id); 
+    return cursoService.modificar(body);
+}
     
 @GetMapping("/buscar")
     public List<Curso> obtenerPorNombre(@RequestParam String nombre) {
