@@ -34,19 +34,18 @@ public class CursoService {
     return curso;
 }
 
-
-    public List<Curso> obtenerPorNombre(String nombre) {
+public List<Curso> obtenerPorNombre(String nombre) {
         return cursoRepo.findByNombreCurso(nombre);
     }
     
+
     public Curso registrar(CursoCrear cursoCrear) {
         try {
             Curso nuevoCurso = new Curso();
             nuevoCurso.setEstado(true); 
-                    //Si el usuario no especifica 'activo', lo dejamos como false por defecto
-                    //nuevoCurso.setActivo(cursoCrear.getActivo() != null ? cursoCrear.getActivo() : false);
             nuevoCurso.setNombreCurso(cursoCrear.getNombreCurso());
             nuevoCurso.setDescripcion(cursoCrear.getDescripcion());
+            nuevoCurso.setPrecio(cursoCrear.getPrecio());
             return cursoRepo.save(nuevoCurso);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso");
@@ -65,16 +64,19 @@ public class CursoService {
     if (modificado.getDescripcion() != null) {
         curso.setDescripcion(modificado.getDescripcion());
     }    
+    if (modificado.getPrecio()!= null) {
+        curso.setPrecio(modificado.getPrecio());
+    }   
     return cursoRepo.save(curso);
 }
 
-public void eliminar(int id) {
+/* public void eliminar(int id) {
     Curso curso = cursoRepo.findById(id).orElse(null);
     if (curso == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
     }
     cursoRepo.delete(curso);
-}
+} */
 
     public Curso cambiarEstado(int id) {
     Curso curso = cursoRepo.findById(id).orElse(null);

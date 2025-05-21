@@ -30,5 +30,5 @@ public class Curso {
     private String descripcion;
     @Column(nullable = false)
     private Boolean estado;
-    private int precio;
+    private Integer precio;
 }

@@ -58,23 +58,23 @@ public class CursoController {
     }
 
 
-    @DeleteMapping("/{id}")
+/*     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
     cursoService.eliminar(id);
     return ResponseEntity.ok("Curso Eliminado");
-}
+} */
 
     @PutMapping("/{id}/estado")
     public ResponseEntity<String> cambiarEstado(@PathVariable Integer id) {
     Curso cursoActualizado = cursoService.cambiarEstado(id);
     String mensaje;
     if (cursoActualizado.getEstado()) {
-        mensaje = "Curso "+id+" activado correctamente.";
+        mensaje = "Curso :"+id+" activado correctamente.";
     } else {
-        mensaje = "Curso "+id+" desactivado correctamente.";
+        mensaje = "Curso :"+id+" desactivado correctamente.";
     }
 
     return ResponseEntity.ok(mensaje);
 }
-//Prueba carga
+
 }
