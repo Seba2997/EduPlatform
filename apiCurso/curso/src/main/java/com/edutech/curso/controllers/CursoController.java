@@ -69,9 +69,9 @@ public class CursoController {
     Curso cursoActualizado = cursoService.cambiarEstado(id);
     String mensaje;
     if (cursoActualizado.getEstado()) {
-        mensaje = "Curso :"+id+" activado correctamente.";
+        mensaje = "Curso id: "+id+" activado correctamente.";
     } else {
-        mensaje = "Curso :"+id+" desactivado correctamente.";
+        mensaje = "Curso id: "+id+" desactivado correctamente.";
     }
 
     return ResponseEntity.ok(mensaje);
