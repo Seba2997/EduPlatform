@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,23 +40,30 @@ public class UserService {
         return userRepository.findByActive(true);
     }
 
-    public User registrar(UserCrear userCrear){
+    public User registrar(UserCrear user){
         try {
             User newUser = new User();
-            newUser.setName(userCrear.getName());
-            newUser.setEmail(userCrear.getEmail()); 
-            newUser.setPhone(userCrear.getPhone());
-            newUser.setPassword(userCrear.getPassword());
+            newUser.setName(user.getName());
+            newUser.setEmail(user.getEmail()); 
+            newUser.setPhone(user.getPhone());
+            newUser.setPassword(generateHash(user.getPassword()));
             newUser.setActive(true);
             newUser.setDateCreated(new Date());
             return userRepository.save(newUser);
-            
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar el usuario");
         }
 
     }
 
+    private String generateHash(String password){
+        PasswordEncoder hasheador = new BCryptPasswordEncoder();
+        return hasheador.encode(password);
+    }
+
     
+
+
 
 }
