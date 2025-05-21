@@ -83,7 +83,6 @@ public class UserService {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
-
         try {
             user.setActive(activo);
             userRepository.save(user);

@@ -9,6 +9,16 @@
             "projectName": "curso",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiUsuarioApplication<servicio_usuarios>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduplatform.apiUsuario.ApiUsuarioApplication",
+            "projectName": "servicio_usuarios",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
