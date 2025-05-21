@@ -45,6 +45,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
             nuevoCurso.setEstado(true); 
             nuevoCurso.setNombreCurso(cursoCrear.getNombreCurso());
             nuevoCurso.setDescripcion(cursoCrear.getDescripcion());
+            nuevoCurso.setEstado(cursoCrear.getEstado());
             nuevoCurso.setPrecio(cursoCrear.getPrecio());
             return cursoRepo.save(nuevoCurso);
         } catch (Exception e) {
