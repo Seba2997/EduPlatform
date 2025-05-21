@@ -1,5 +1,6 @@
 package com.eduplatform.apiUsuario.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.eduplatform.apiUsuario.models.entities.User;
+import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.repositories.UserRepository;
 
 @Service
@@ -36,6 +38,23 @@ public class UserService {
         return userRepository.findByActive(true);
     }
 
+    public User registrar(UserCrear userCrear){
+        try {
+            User newUser = new User();
+            newUser.setName(userCrear.getName());
+            newUser.setEmail(userCrear.getEmail()); 
+            newUser.setPhone(userCrear.getPhone());
+            newUser.setPassword(userCrear.getPassword());
+            newUser.setActive(true);
+            newUser.setDateCreated(new Date());
+            return userRepository.save(newUser);
+            
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar el usuario");
+        }
 
+    }
+
+    
 
 }
