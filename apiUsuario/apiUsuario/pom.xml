@@ -11,7 +11,7 @@
 	<groupId>com.eduPlatform</groupId>
 	<artifactId>apiUsuario</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>servicio_usuarios</name>
+	<name>apiUsuario</name>
 	<description>ejemplo api con bd</description>
 	<url/>
 	<licenses>
@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 
