@@ -12,7 +12,7 @@
 	<artifactId>api_inscripcion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>api_autos</name>
-	<description>Demo project for Spring Boot</description>
+	<description>API que gestiona la inscripcion de los usuarios a los cursos</description>
 	<url/>
 	<licenses>
 		<license/>
