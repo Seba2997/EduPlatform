@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eduplatform</groupId>
-	<artifactId>api_inscripcion</artifactId>
+	<artifactId>apiInscripcion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>api_autos</name>
 	<description>API que gestiona la inscripcion de los usuarios a los cursos</description>
