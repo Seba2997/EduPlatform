@@ -48,7 +48,7 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public Curso modificar(@Valid @RequestBody CursoEditar body){
+    public Curso modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body){
         return cursoService.modificar(body);
 
     }
