@@ -52,11 +52,11 @@ public class CursoController {
         return cursoService.modificar(body);
 
     }
-    @GetMapping("/buscar")
+    
+@GetMapping("/buscar")
     public List<Curso> obtenerPorNombre(@RequestParam String nombre) {
         return cursoService.obtenerPorNombre(nombre);
     }
-
 
 /*     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
