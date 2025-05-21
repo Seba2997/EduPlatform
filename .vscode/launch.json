@@ -19,6 +19,16 @@
             "projectName": "servicio_usuarios",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiUsuarioApplication<apiUsuario>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduplatform.apiUsuario.ApiUsuarioApplication",
+            "projectName": "apiUsuario",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
