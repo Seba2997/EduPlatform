@@ -3,15 +3,17 @@ package com.eduplatform.apiUsuario.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
+import com.eduplatform.apiUsuario.models.request.UserStatusUpdate;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.services.UserService;
 
@@ -44,14 +46,27 @@ public class UserControllers {
         return userService.obtenerActivos();
     }
 
-    @PostMapping("/")
+    @PostMapping("/registrar")
     public User registrar(@Valid @RequestBody UserCrear user){
         return userService.registrar(user);
     }
 
-    @PostMapping("/")
+    @PutMapping("/modificar")
     public User modificar(@Valid @RequestBody UserUpdate body){
         return userService.modificar(body);
     }
-    
+
+    @PutMapping("/estado")
+    public ResponseEntity<String> cambiarEstado(@RequestBody UserStatusUpdate body) {
+        userService.cambiarEstado(body.getId(), body.isActive());
+
+        String estado;
+        if (body.isActive()) {
+            estado = "activado";
+        } else {
+            estado = "desactivado";
+        }
+        return ResponseEntity.ok("Usuario " + estado + " correctamente.");
+    }   
+
 }

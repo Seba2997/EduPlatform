@@ -2,14 +2,12 @@ package com.eduplatform.apiUsuario.services;
 
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
@@ -80,23 +78,18 @@ public class UserService {
         }
     }
 
-    public void desactivar(int id){
+    public void cambiarEstado(int id, boolean activo) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
+
         try {
-            user.setActive(false);
+            user.setActive(activo);
             userRepository.save(user);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al eliminar el usuario");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al cambiar el estado del usuario");
         }
     }
-
-
-
-
-
-
 
 }
