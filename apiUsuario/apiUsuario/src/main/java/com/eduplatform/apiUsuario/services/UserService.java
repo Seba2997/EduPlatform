@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
+import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.repositories.UserRepository;
 
 @Service
@@ -62,7 +63,37 @@ public class UserService {
         return hasheador.encode(password);
     }
 
-    
+    public User modificar(UserUpdate modiicado){
+        User user = userRepository.findById(modiicado.getId()).orElse(null);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
+        try {
+            user.setName(modiicado.getName());
+            user.setPhone(modiicado.getPhone());
+            if (modiicado.getPassword() != null) {
+                user.setPassword(generateHash(modiicado.getPassword()));
+            }
+            return userRepository.save(user);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al modificar el usuario");
+        }
+    }
+
+    public void desactivar(int id){
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
+        try {
+            user.setActive(false);
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al eliminar el usuario");
+        }
+    }
+
+
 
 
 
