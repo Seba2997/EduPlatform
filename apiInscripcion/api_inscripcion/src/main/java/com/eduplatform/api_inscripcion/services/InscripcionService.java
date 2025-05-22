@@ -35,6 +35,9 @@ public class InscripcionService {
             throw new RuntimeException("Usuario no encontrado");
         }
 
+/*        if (==false) {
+        throw new RuntimeException("El usuario con ID " + usuario.getId() + " no está activo y no puede ser inscrito.");
+    } */
 
         Curso curso = webClient.get()
                                     .uri("http://localhost:8081/curso/{id}", idCurso)
@@ -49,6 +52,12 @@ public class InscripcionService {
         if(inscripcionRepo.existsByIdEstudianteAndIdCurso(idEstudiante, idCurso)){
             throw new RuntimeException("Usuario ya inscrito");
         }
+
+/*        if (==false) {
+        throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
+    }*/
+
+
         Inscripcion inscripcion= new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
         inscripcion.setNombreEstudiante(usuario.getNombre());
