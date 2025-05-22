@@ -56,14 +56,14 @@ public class InscripcionService {
 
         Inscripcion inscripcion= new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
-        inscripcion.setNombreEstudiante(usuario.getNombre());
+        inscripcion.setNombreEstudiante(usuario.getName());
         inscripcion.setEmailEstudiante(usuario.getEmail());
         
         inscripcion.setIdCurso(curso.getId());
-        inscripcion.setNombreCurso(curso.getNombre());
+        inscripcion.setNombreCurso(curso.getNombreCurso());
         inscripcion.setPrecioCurso(curso.getPrecio());
         inscripcion.setFechaInscripcion(LocalDate.now());
-
+        inscripcionRepo.save(inscripcion);
         return inscripcion;
     }
 

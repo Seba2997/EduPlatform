@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Curso {
     private int id;
-    private String nombre;
+    private String nombreCurso;
     private Boolean estado;
     private String precio;
 }
