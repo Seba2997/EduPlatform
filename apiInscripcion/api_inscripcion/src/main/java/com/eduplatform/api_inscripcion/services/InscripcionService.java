@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.eduplatform.api_inscripcion.entities.Curso;
 import com.eduplatform.api_inscripcion.entities.Inscripcion;
@@ -60,11 +62,16 @@ public class InscripcionService {
         return inscripcion;
     }
 
-      public List<Inscripcion> obtenerTodos() {
+    public List<Inscripcion> obtenerTodos() {
         return inscripcionRepo.findAll();
     }
 
-    public obtenerUno(){}
-
+    public Inscripcion obtenerCursoPorId(Integer id) {
+    Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
+    if (inscripcion == null) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
+    }
+    return inscripcion;
+}
 
 }
