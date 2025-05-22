@@ -17,6 +17,8 @@ public class Inscripcion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    //Fecha de inscripción
+    private LocalDate fechaInscripcion;
 
     //Datos del estudiante
     private int idEstudiante;
@@ -27,8 +29,7 @@ public class Inscripcion {
     //datos del curso
     private int idCurso;
     private String nombreCurso;
-    private String estadoCurso;
     private String precioCurso;
 
-    private LocalDate fechaInscripcion;
+    
 }
