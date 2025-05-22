@@ -28,6 +28,38 @@
             "mainClass": "com.eduplatform.apiUsuario.ApiUsuarioApplication",
             "projectName": "apiUsuario",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CursoApplication<apiCurso>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.edutech.curso.CursoApplication",
+            "projectName": "apiCurso",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiInscripcionApplication<apiInscripcion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduplatform.api_inscripcion.ApiInscripcionApplication",
+            "projectName": "apiInscripcion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-GatewayApplication<gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.gateway.GatewayApplication",
+            "projectName": "gateway",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]
