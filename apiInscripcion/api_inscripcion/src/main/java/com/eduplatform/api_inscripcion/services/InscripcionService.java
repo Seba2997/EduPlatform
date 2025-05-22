@@ -3,20 +3,24 @@ package com.eduplatform.api_inscripcion.services;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.eduplatform.api_inscripcion.entities.Curso;
 import com.eduplatform.api_inscripcion.entities.Inscripcion;
 import com.eduplatform.api_inscripcion.entities.Usuario;
+import com.eduplatform.api_inscripcion.repositories.InscripcionRepository;
 
 
 @Service
 public class InscripcionService {
-    
+
+    @Autowired
+    private InscripcionRepository inscripcionRepo;
     @Autowired
     private WebClient webClient;
-
+    
     public Inscripcion inscribirUsuario(int idEstudiante, int idCurso){
 
         Usuario usuario = webClient.get()
@@ -39,7 +43,10 @@ public class InscripcionService {
         if(curso == null){
             throw new RuntimeException("Curso no encontrado");
         }
-
+        
+        if(inscripcionRepo.existsByIdEstudianteAndIdCurso(idEstudiante, idCurso)){
+            throw new RuntimeException("Usuario ya inscrito");
+        }
         Inscripcion inscripcion= new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
         inscripcion.setNombreEstudiante(usuario.getNombre());
