@@ -1,9 +1,9 @@
 package com.eduplatform.api_inscripcion.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -58,6 +58,13 @@ public class InscripcionService {
         inscripcion.setFechaInscripcion(LocalDate.now());
 
         return inscripcion;
-
     }
+
+      public List<Inscripcion> obtenerTodos() {
+        return inscripcionRepo.findAll();
+    }
+
+    public obtenerUno(){}
+
+
 }
