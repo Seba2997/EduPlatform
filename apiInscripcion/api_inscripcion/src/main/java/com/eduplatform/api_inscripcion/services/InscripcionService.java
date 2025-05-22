@@ -35,9 +35,6 @@ public class InscripcionService {
             throw new RuntimeException("Usuario no encontrado");
         }
 
-/*        if (==false) {
-        throw new RuntimeException("El usuario con ID " + usuario.getId() + " no está activo y no puede ser inscrito.");
-    } */
 
         Curso curso = webClient.get()
                                     .uri("http://localhost:8081/curso/{id}", idCurso)
@@ -53,9 +50,9 @@ public class InscripcionService {
             throw new RuntimeException("Usuario ya inscrito");
         }
 
-/*        if (==false) {
+        if (curso.getEstado()==false) {
         throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
-    }*/
+    }
 
 
         Inscripcion inscripcion= new Inscripcion();

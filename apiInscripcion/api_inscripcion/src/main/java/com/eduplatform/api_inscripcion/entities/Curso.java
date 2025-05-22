@@ -6,7 +6,6 @@ import lombok.Data;
 public class Curso {
     private int id;
     private String nombre;
-    private String estado;
+    private Boolean estado;
     private String precio;
-
 }
