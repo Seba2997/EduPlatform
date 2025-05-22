@@ -66,7 +66,7 @@ public class InscripcionService {
         return inscripcionRepo.findAll();
     }
 
-    public Inscripcion obtetenerInscripcionId(Integer id) {
+    public Inscripcion obtenerInscripcionId(Integer id) {
     Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
     if (inscripcion == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
