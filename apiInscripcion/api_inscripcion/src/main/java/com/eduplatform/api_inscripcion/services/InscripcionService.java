@@ -54,7 +54,6 @@ public class InscripcionService {
         throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
     }
 
-
         Inscripcion inscripcion= new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
         inscripcion.setNombreEstudiante(usuario.getNombre());
@@ -79,5 +78,14 @@ public class InscripcionService {
     }
     return inscripcion;
 }
+
+public void eliminar(int id) {
+    Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
+    if (inscripcion == null) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripción no encontrada");
+    }
+    inscripcionRepo.delete(inscripcion);
+} 
+
 
 }
