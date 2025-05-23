@@ -48,6 +48,7 @@ public class UserService {
             newUser.setPassword(generateHash(user.getPassword()));
             newUser.setActive(true);
             newUser.setDateCreated(new Date());
+            newUser.setRol(user.getRol());
             return userRepository.save(newUser);
 
         } catch (Exception e) {
