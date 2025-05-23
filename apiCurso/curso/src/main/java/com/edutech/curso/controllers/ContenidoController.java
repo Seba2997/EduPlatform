@@ -25,28 +25,28 @@ public class ContenidoController {
     @Autowired
     private ContenidoService contenidoService;
 
-    @GetMapping("/contenidos/")
+    @GetMapping("/")
     public List<Contenido> traerTodos(){
         return contenidoService.obtenerTodos();
     }
 
-    @GetMapping("/cusrsos/contenidos/{id}")
+    @GetMapping("/{id}")
     public Contenido traerPorId(@PathVariable int id) {
         return contenidoService.obtenerContenidoPorId(id);
     }
 
-    @PostMapping("/contenidos/{id}")
+    @PostMapping("/{id}")
     public Contenido registrarContenido(@Valid @RequestBody ContenidoCrear nuevo){
         return contenidoService.registrar(nuevo);
     }
 
-    @PutMapping("/contenidos/{id}")
+    @PutMapping("/{id}")
     public Contenido modificar(@PathVariable Integer id, @Valid @RequestBody ContenidoEditar body) {
     body.setIdContenido(id); 
     return contenidoService.modificar(body);
     }
 
-    @DeleteMapping("/contenidos/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
     contenidoService.eliminarContenido(id);
     return ResponseEntity.ok("Contenido Eliminado");
