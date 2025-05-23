@@ -1,4 +1,4 @@
-package com.eduplatform.apiUsuario.models;
+package com.edutech.curso.models.user;
 
 public enum Rol {
     ESTUDIANTE,

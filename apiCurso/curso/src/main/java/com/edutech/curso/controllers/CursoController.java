@@ -43,9 +43,9 @@ public class CursoController {
         return cursoService.obtenerActivos();
     }
     
-    @PostMapping("/")
-    public Curso crearCurso(@Valid @RequestBody CursoCrear nuevo){
-        return cursoService.registrar(nuevo);
+    @PostMapping("/{idUsuario}")
+    public Curso crearCurso(@Valid @RequestBody CursoCrear nuevo, @PathVariable int idUsuario){
+        return cursoService.registrar(nuevo, idUsuario);
     }
 
     @PutMapping("/{id}")

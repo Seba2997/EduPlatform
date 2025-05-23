@@ -31,4 +31,6 @@ public class Curso {
     @Column(nullable = false)
     private Boolean estado;
     private Integer precio;
+
+    private int idProfesor;
 }
