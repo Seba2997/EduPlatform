@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CursoCrear {
+    private int idContenido;
     private String nombreCurso;
     private String descripcion;
     private Boolean estado;

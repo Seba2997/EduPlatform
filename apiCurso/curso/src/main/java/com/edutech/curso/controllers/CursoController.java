@@ -42,6 +42,7 @@ public class CursoController {
     public List<Curso> traerActivos(){
         return cursoService.obtenerActivos();
     }
+    
     @PostMapping("/")
     public Curso crearCurso(@Valid @RequestBody CursoCrear nuevo){
         return cursoService.registrar(nuevo);
