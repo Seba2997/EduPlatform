@@ -33,9 +33,7 @@ public Contenido registrar(ContenidoCrear crear) {
         try {
             Contenido nuevoContenido = new Contenido();
             
-            nuevoContenido.setNumeroUnidad(crear.getNumeroUnidad());
-            nuevoContenido.setTituloUnidad(crear.getTituloUnidad());
-            nuevoContenido.setNumeroContenido(crear.getNumeroContenido());
+            nuevoContenido.setTituloContenido(crear.getContenido());
             nuevoContenido.setContenido(crear.getContenido());
             return contenidoRepo.save(nuevoContenido);
         } catch (Exception e) {
@@ -48,19 +46,13 @@ public Contenido registrar(ContenidoCrear crear) {
     if (contenido == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
     }
-
-    if (modificado.getNumeroUnidad() != null) {
-        contenido.setNumeroUnidad(modificado.getNumeroUnidad());
-    }
-    if (modificado.getTituloUnidad() != null) {
-        contenido.setTituloUnidad(modificado.getTituloUnidad());
-    }
-    if (modificado.getNumeroContenido() != null) {
-        contenido.setNumeroContenido(modificado.getNumeroContenido());
+    if (modificado.getTituloContenido() != null) {
+        contenido.setTituloContenido(modificado.getTituloContenido());
     }
     if (modificado.getContenido() != null) {
         contenido.setContenido(modificado.getContenido());
     }
+
     return contenidoRepo.save(contenido);
 }
 

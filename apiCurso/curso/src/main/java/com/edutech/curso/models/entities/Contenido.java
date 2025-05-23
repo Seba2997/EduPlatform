@@ -22,14 +22,12 @@ public class Contenido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idContenido;
-    private int numeroUnidad;
-    private String tituloUnidad;
-    private int numeroContenido;
+    private String tituloContenido;
     private String contenido;
 
 
     @ManyToOne
-    @JoinColumn(name = "curso")
+    @JoinColumn(name = "curso_id")
     private Curso curso;
     //posiblemente
     /*private String quiz;

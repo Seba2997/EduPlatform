@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class ContenidoCrear {
     private int idContenido;
-    private int numeroUnidad;
-    private String tituloUnidad;
-    private int numeroContenido;
+    private String tituloContenido;
     private String contenido;
 
 }
