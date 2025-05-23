@@ -7,5 +7,4 @@ public class ContenidoCrear {
     private int idContenido;
     private String tituloContenido;
     private String contenido;
-
 }
