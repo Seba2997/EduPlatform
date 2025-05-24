@@ -40,7 +40,7 @@ public class InscripcionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarInscripcion(@PathVariable int id){
-    inscripcionService.eliminar(id);
-    return ResponseEntity.ok("Inscripcion Eliminada");
-} 
+        inscripcionService.eliminar(id);
+        return ResponseEntity.ok("Inscripcion Eliminada");
+    } 
 }

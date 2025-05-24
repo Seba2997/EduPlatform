@@ -34,7 +34,7 @@ public class ContenidoService {
         return contenido;
     }
 
-public Contenido registrar(ContenidoCrear crear, int idCurso) {
+    public Contenido registrar(ContenidoCrear crear, int idCurso) {
         try {
             Curso curso = cursoService.obtenerCursoPorId(idCurso);
             Contenido nuevoContenido = new Contenido();
@@ -49,26 +49,25 @@ public Contenido registrar(ContenidoCrear crear, int idCurso) {
     }
 
     public Contenido modificar(ContenidoEditar modificado) {
-    Contenido contenido = contenidoRepo.findById(modificado.getIdContenido()).orElse(null);
-    if (contenido == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
+        Contenido contenido = contenidoRepo.findById(modificado.getIdContenido()).orElse(null);
+        if (contenido == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
+        }
+        if (modificado.getTituloContenido() != null) {
+            contenido.setTituloContenido(modificado.getTituloContenido());
+        }
+        if (modificado.getContenido() != null) {
+            contenido.setContenido(modificado.getContenido());
+        }
+        return contenidoRepo.save(contenido);
     }
-    if (modificado.getTituloContenido() != null) {
-        contenido.setTituloContenido(modificado.getTituloContenido());
-    }
-    if (modificado.getContenido() != null) {
-        contenido.setContenido(modificado.getContenido());
-    }
-
-    return contenidoRepo.save(contenido);
-}
 
     public void eliminarContenido(int id) {
         Contenido contenido = contenidoRepo.findById(id).orElse(null);
-    if (contenido == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
+        if (contenido == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
+        }
+        contenidoRepo.delete(contenido);
     }
-    contenidoRepo.delete(contenido);
-}
 
 }

@@ -9,8 +9,5 @@ import com.edutech.curso.models.entities.Contenido;
 
 @Repository
 public interface ContenidoRepository extends JpaRepository<Contenido, Integer>{
-    
-    
-
 
 }

@@ -7,4 +7,5 @@ import com.edutech.curso.models.entities.Profesor;
 
 @Repository
 public interface ProfesorRepository extends JpaRepository<Profesor, Integer> {  
+    
 }
