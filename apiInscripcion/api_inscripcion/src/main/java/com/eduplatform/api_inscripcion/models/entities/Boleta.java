@@ -16,8 +16,6 @@ public class Boleta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int numeroBoleta;
-    private String nombreUsuario;
-    private String nombreCurso;
     private int precio;
     private String fechaCompra;
 

@@ -100,8 +100,6 @@ public class InscripcionService {
 
         Boleta boleta = new Boleta();
         boleta.setNumeroBoleta(response.getNumeroBoleta());
-        boleta.setNombreUsuario(response.getNombreUsuario());
-        boleta.setNombreCurso(response.getNombreCurso());
         boleta.setPrecio(response.getPrecio());
         boleta.setFechaCompra(response.getFechaCompra().toString());
         boleta.setInscripcion(inscripcion);

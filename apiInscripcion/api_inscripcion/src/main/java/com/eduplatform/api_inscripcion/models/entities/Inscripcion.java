@@ -2,10 +2,12 @@ package com.eduplatform.api_inscripcion.models.entities;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -30,4 +32,6 @@ public class Inscripcion {
     private int idCurso;
     private String nombreCurso;
 
+    @OneToOne(mappedBy = "inscripcion", cascade = CascadeType.ALL)
+    private Boleta boleta;
 }
