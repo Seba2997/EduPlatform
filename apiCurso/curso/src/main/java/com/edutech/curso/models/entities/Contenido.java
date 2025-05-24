@@ -27,12 +27,7 @@ public class Contenido {
 
 
     @ManyToOne
-    @JoinColumn(name = "curso_id")
+    @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
-    //posiblemente
-    /*private String quiz;
-    private int puntajeQuiz;
-    private int notaQuiz;*/
-
 
 }
