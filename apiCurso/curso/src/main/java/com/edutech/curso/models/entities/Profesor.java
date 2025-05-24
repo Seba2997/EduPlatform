@@ -22,7 +22,7 @@ public class Profesor {
     @Id
     private int id;
     private String nombre;
-    private String apellidos;
+    private String email;
 
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL)
     private List<Curso> cursos = new ArrayList<>();

@@ -36,7 +36,7 @@ public class ContenidoController {
         return contenidoService.obtenerContenidoPorId(id);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/")
     public Contenido registrarContenido(@Valid @RequestBody ContenidoCrear nuevo){
         return contenidoService.registrar(nuevo);
     }

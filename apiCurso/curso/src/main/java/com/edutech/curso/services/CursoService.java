@@ -68,7 +68,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
                 Profesor nuevo = new Profesor();
                 nuevo.setId(usuario.getId());
                 nuevo.setNombre(usuario.getName());
-                nuevo.setApellidos(usuario.getEmail());
+                nuevo.setEmail(usuario.getEmail());
                 profesor = profesorRepo.save(nuevo);
             }
 
