@@ -29,7 +29,5 @@ public class Inscripcion {
     //datos del curso
     private int idCurso;
     private String nombreCurso;
-    private int precioCurso;
 
-    
 }

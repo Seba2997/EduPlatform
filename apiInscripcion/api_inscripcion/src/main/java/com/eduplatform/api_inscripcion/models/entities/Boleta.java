@@ -19,7 +19,6 @@ public class Boleta {
     private String nombreUsuario;
     private String nombreCurso;
     private int precio;
-    private String email;
     private String fechaCompra;
 
 

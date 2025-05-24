@@ -84,7 +84,6 @@ public class InscripcionService {
         
         inscripcion.setIdCurso(curso.getId());
         inscripcion.setNombreCurso(curso.getNombreCurso());
-        inscripcion.setPrecioCurso(curso.getPrecio());
         inscripcion.setFechaInscripcion(LocalDate.now());
         inscripcionRepo.save(inscripcion);
         
@@ -103,9 +102,7 @@ public class InscripcionService {
         boleta.setNumeroBoleta(response.getNumeroBoleta());
         boleta.setNombreUsuario(response.getNombreUsuario());
         boleta.setNombreCurso(response.getNombreCurso());
-        boleta.setEmail(response.getEmail());
         boleta.setPrecio(response.getPrecio());
-        boleta.setEmail(response.getEmail());
         boleta.setFechaCompra(response.getFechaCompra().toString());
         boleta.setInscripcion(inscripcion);
         boletaRepository.save(boleta);
