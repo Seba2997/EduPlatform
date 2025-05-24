@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.edutech.curso.models.entities.Contenido;
@@ -11,7 +12,7 @@ import com.edutech.curso.models.requests.ContenidoCrear;
 import com.edutech.curso.models.requests.ContenidoEditar;
 import com.edutech.curso.repositories.ContenidoRepository;
 
-
+@Service
 public class ContenidoService {
 
     @Autowired

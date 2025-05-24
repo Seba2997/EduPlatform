@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/contenidos")
 public class ContenidoController {
+    
     @Autowired
     private ContenidoService contenidoService;
 
