@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.eduplatform.api_inscripcion.entities.Inscripcion;
+import com.eduplatform.api_inscripcion.models.entities.Inscripcion;
 
 @Repository
 public interface InscripcionRepository extends JpaRepository<Inscripcion, Integer> {

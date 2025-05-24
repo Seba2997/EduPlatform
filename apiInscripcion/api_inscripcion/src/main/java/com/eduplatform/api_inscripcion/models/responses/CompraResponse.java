@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.entities.responses;
+package com.eduplatform.api_inscripcion.models.responses;
 
 import java.time.LocalDate;
 

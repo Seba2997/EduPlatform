@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.eduplatform.api_inscripcion.entities.Curso;
-import com.eduplatform.api_inscripcion.entities.Inscripcion;
-import com.eduplatform.api_inscripcion.entities.Usuario;
-import com.eduplatform.api_inscripcion.entities.request.CompraRequest;
-import com.eduplatform.api_inscripcion.entities.responses.CompraResponse;
+import com.eduplatform.api_inscripcion.models.Curso;
+import com.eduplatform.api_inscripcion.models.Usuario;
+import com.eduplatform.api_inscripcion.models.entities.Boleta;
+import com.eduplatform.api_inscripcion.models.entities.Inscripcion;
+import com.eduplatform.api_inscripcion.models.request.CompraRequest;
+import com.eduplatform.api_inscripcion.models.responses.CompraResponse;
+import com.eduplatform.api_inscripcion.repositories.BoletaRepository;
 import com.eduplatform.api_inscripcion.repositories.InscripcionRepository;
 
 
@@ -25,6 +27,9 @@ public class InscripcionService {
     private InscripcionRepository inscripcionRepo;
     @Autowired
     private WebClient webClient;
+
+    @Autowired
+    private BoletaRepository boletaRepository;
     
     public CompraResponse inscribirUsuario(int idEstudiante, int idCurso, CompraRequest compraRequest){
         CompraResponse response = new CompraResponse();
@@ -94,6 +99,17 @@ public class InscripcionService {
         response.setFechaCompra(LocalDate.now());
         response.setMensaje("Compra/inscripción exitosa al curso: " + curso.getNombreCurso());
 
+        Boleta boleta = new Boleta();
+        boleta.setNumeroBoleta(response.getNumeroBoleta());
+        boleta.setNombreUsuario(response.getNombreUsuario());
+        boleta.setNombreCurso(response.getNombreCurso());
+        boleta.setEmail(response.getEmail());
+        boleta.setPrecio(response.getPrecio());
+        boleta.setEmail(response.getEmail());
+        boleta.setFechaCompra(response.getFechaCompra().toString());
+        boleta.setInscripcion(inscripcion);
+        boletaRepository.save(boleta);
+        
         return response;
     }
 

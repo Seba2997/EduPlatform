@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eduplatform.api_inscripcion.entities.Inscripcion;
-import com.eduplatform.api_inscripcion.entities.request.CompraRequest;
-import com.eduplatform.api_inscripcion.entities.responses.CompraResponse;
+import com.eduplatform.api_inscripcion.models.entities.Inscripcion;
+import com.eduplatform.api_inscripcion.models.request.CompraRequest;
+import com.eduplatform.api_inscripcion.models.responses.CompraResponse;
 import com.eduplatform.api_inscripcion.services.InscripcionService;
 
 @RestController
@@ -43,4 +43,6 @@ public class InscripcionController {
         inscripcionService.eliminar(id);
         return ResponseEntity.ok("Inscripcion Eliminada");
     } 
+
+
 }
