@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import com.edutech.curso.models.entities.Curso;
+import com.edutech.curso.models.entities.Profesor;
 import com.edutech.curso.models.requests.CursoCrear;
 import com.edutech.curso.models.requests.CursoEditar;
 import com.edutech.curso.models.user.Rol;
 import com.edutech.curso.models.user.Usuario;
 import com.edutech.curso.repositories.CursoRepository;
+import com.edutech.curso.repositories.ProfesorRepository;
 
 
 
@@ -24,6 +26,9 @@ public class CursoService {
     @Autowired
     private WebClient webClient;
 
+    @Autowired
+    private ProfesorRepository profesorRepo;
+
     public List<Curso> obtenerTodos() {
         return cursoRepo.findAll();
     }
@@ -32,7 +37,7 @@ public class CursoService {
         return cursoRepo.findByEstado(true);
     }
 
-    public Curso obtenerCursoPorId(Integer id) {
+    public Curso obtenerCursoPorId(int id) {
     Curso curso = cursoRepo.findById(id).orElse(null);
     if (curso == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
@@ -58,6 +63,15 @@ public List<Curso> obtenerPorNombre(String nombre) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo los coordinadores pueden crear cursos");
             }
 
+            Profesor profesor = profesorRepo.findById(idUsuario).orElse(null);
+            if (profesor == null) {
+                Profesor nuevo = new Profesor();
+                nuevo.setId(usuario.getId());
+                nuevo.setNombre(usuario.getName());
+                nuevo.setApellidos(usuario.getEmail());
+                profesor = profesorRepo.save(nuevo);
+            }
+
 
             Curso nuevoCurso = new Curso();
             nuevoCurso.setEstado(true); 
@@ -65,11 +79,9 @@ public List<Curso> obtenerPorNombre(String nombre) {
             nuevoCurso.setDescripcion(cursoCrear.getDescripcion());
             nuevoCurso.setEstado(cursoCrear.getEstado());
             nuevoCurso.setPrecio(cursoCrear.getPrecio());
-            nuevoCurso.setIdProfesor(idUsuario);
+            nuevoCurso.setProfesor(profesor);
             return cursoRepo.save(nuevoCurso);
 
-        } catch (ResponseStatusException ex) {
-            throw ex;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso");
         }

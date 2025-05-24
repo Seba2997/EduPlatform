@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 
@@ -30,7 +32,9 @@ public class Curso {
     private String descripcion;
     @Column(nullable = false)
     private Boolean estado;
-    private Integer precio;
+    private int precio;
 
-    private int idProfesor;
+    @ManyToOne
+    @JoinColumn(name = "profesor_id", nullable = false)
+    private Profesor profesor;
 }

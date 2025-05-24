@@ -1,7 +1,9 @@
 package com.eduplatform.apiUsuario.models.request;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class UserUpdate {
    
     private int id;
