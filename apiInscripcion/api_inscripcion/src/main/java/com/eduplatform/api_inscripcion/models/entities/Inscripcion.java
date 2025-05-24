@@ -2,6 +2,8 @@ package com.eduplatform.api_inscripcion.models.entities;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,5 +35,6 @@ public class Inscripcion {
     private String nombreCurso;
 
     @OneToOne(mappedBy = "inscripcion", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Boleta boleta;
 }

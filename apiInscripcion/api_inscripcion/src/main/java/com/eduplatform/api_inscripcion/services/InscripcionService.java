@@ -88,8 +88,13 @@ public class InscripcionService {
         inscripcionRepo.save(inscripcion);
         
         Random random = new Random();
-        int numeroAleatorio = 100000 + random.nextInt(900000); 
 
+        int numeroAleatorio= 100000 + random.nextInt(900000); 
+        
+        while (boletaRepository.existsByNumeroBoleta(numeroAleatorio)){
+            numeroAleatorio= 100000 + random.nextInt(900000); 
+        }
+            
         response.setNumeroBoleta(numeroAleatorio);
         response.setNombreUsuario(usuario.getName());
         response.setPrecio(curso.getPrecio());

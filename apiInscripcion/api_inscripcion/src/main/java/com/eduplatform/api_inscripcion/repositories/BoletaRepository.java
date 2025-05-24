@@ -6,4 +6,7 @@ import com.eduplatform.api_inscripcion.models.entities.Boleta;
 
 public interface BoletaRepository extends JpaRepository<Boleta, Integer> {
     
+
+    Boolean existsByNumeroBoleta(int numeroBoleta);
+    
 }
