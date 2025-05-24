@@ -36,20 +36,20 @@ public class ContenidoController {
         return contenidoService.obtenerContenidoPorId(id);
     }
 
-    @PostMapping("/")
-    public Contenido registrarContenido(@Valid @RequestBody ContenidoCrear nuevo){
-        return contenidoService.registrar(nuevo);
+    @PostMapping("/{idCurso}")
+    public Contenido registrarContenido(@Valid @RequestBody ContenidoCrear nuevo, @PathVariable int idCurso) {
+        return contenidoService.registrar(nuevo, idCurso);
     }
 
     @PutMapping("/{id}")
     public Contenido modificar(@PathVariable Integer id, @Valid @RequestBody ContenidoEditar body) {
-    body.setIdContenido(id); 
-    return contenidoService.modificar(body);
+        body.setIdContenido(id); 
+        return contenidoService.modificar(body);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
-    contenidoService.eliminarContenido(id);
-    return ResponseEntity.ok("Contenido Eliminado");
+        contenidoService.eliminarContenido(id);
+        return ResponseEntity.ok("Contenido Eliminado");
     }
 }

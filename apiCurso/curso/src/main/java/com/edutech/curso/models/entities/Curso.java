@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,7 +44,7 @@ public class Curso {
 
     
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Contenido> contenidos = new ArrayList<>();
 
 }

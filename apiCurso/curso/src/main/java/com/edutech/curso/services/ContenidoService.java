@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.edutech.curso.models.entities.Contenido;
+import com.edutech.curso.models.entities.Curso;
 import com.edutech.curso.models.requests.ContenidoCrear;
 import com.edutech.curso.models.requests.ContenidoEditar;
 import com.edutech.curso.repositories.ContenidoRepository;
@@ -18,24 +19,29 @@ public class ContenidoService {
     @Autowired
     private ContenidoRepository contenidoRepo;
 
+    @Autowired
+    private CursoService cursoService;
+
     public List<Contenido> obtenerTodos() {
         return contenidoRepo.findAll();
     }
 
     public Contenido obtenerContenidoPorId(Integer id) {
-    Contenido contenido = contenidoRepo.findById(id).orElse(null);
-    if (contenido == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
+        Contenido contenido = contenidoRepo.findById(id).orElse(null);
+        if (contenido == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
     }
-    return contenido;
-}
+        return contenido;
+    }
 
-public Contenido registrar(ContenidoCrear crear) {
+public Contenido registrar(ContenidoCrear crear, int idCurso) {
         try {
+            Curso curso = cursoService.obtenerCursoPorId(idCurso);
             Contenido nuevoContenido = new Contenido();
             
             nuevoContenido.setTituloContenido(crear.getContenido());
             nuevoContenido.setContenido(crear.getContenido());
+            nuevoContenido.setCurso(curso);
             return contenidoRepo.save(nuevoContenido);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar contenido");
@@ -58,7 +64,7 @@ public Contenido registrar(ContenidoCrear crear) {
 }
 
     public void eliminarContenido(int id) {
-    Contenido contenido = contenidoRepo.findById(id).orElse(null);
+        Contenido contenido = contenidoRepo.findById(id).orElse(null);
     if (contenido == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contenido de este curso no encontrado");
     }

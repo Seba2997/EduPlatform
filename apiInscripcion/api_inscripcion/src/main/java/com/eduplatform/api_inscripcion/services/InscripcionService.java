@@ -54,20 +54,22 @@ public class InscripcionService {
             throw new RuntimeException("Usuario ya inscrito");
         }
 
+
         if (curso.getEstado()==false) {
-        throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
+            throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
         }
+        
         //validacion de tarjeta de compras
         if (!compraRequest.getNombreTarjeta().equals(usuario.getName())){
-            
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre de usuario Incorrecto");
-
         }
+        
         if (compraRequest.getNumeroTarjeta().length() != 8) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número de tarjeta Incorrecto");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número de tarjeta Incorrecto");
         }
+
         if (compraRequest.getCodigoTarjeta().length() != 3) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo de tarjeta Incorrecto");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo de tarjeta Incorrecto");
         }
 
         Inscripcion inscripcion= new Inscripcion();
@@ -93,29 +95,28 @@ public class InscripcionService {
         response.setMensaje("Compra/inscripción exitosa al curso: " + curso.getNombreCurso());
 
         return response;
-}
-
-
+    }
 
     public List<Inscripcion> obtenerTodos() {
         return inscripcionRepo.findAll();
     }
 
     public Inscripcion obtenerInscripcionId(int id) {
-    Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
-    if (inscripcion == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
+        Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
+        if (inscripcion == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
+        }
+        return inscripcion;
     }
-    return inscripcion;
-}
 
-public void eliminar(int id) {
-    Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
+    public void eliminar(int id) {
+        Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
     if (inscripcion == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripción no encontrada");
     }
-    inscripcionRepo.delete(inscripcion);
+        inscripcionRepo.delete(inscripcion);
     }
+
 }
 
 
