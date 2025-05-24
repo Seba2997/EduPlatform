@@ -41,7 +41,7 @@ public class InscripcionService {
 
 
         Curso curso = webClient.get()
-                                    .uri("http://localhost:8081/curso/{id}", idCurso)
+                                    .uri("http://localhost:8081/cursos/{id}", idCurso)
                                     .retrieve()
                                     .bodyToMono(Curso.class)
                                     .block();
@@ -58,13 +58,15 @@ public class InscripcionService {
         throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
         }
         //validacion de tarjeta de compras
-        if (compraRequest.getNombreTarjeta().equalsIgnoreCase(usuario.getName())){
+        if (!compraRequest.getNombreTarjeta().equals(usuario.getName())){
+            
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre de usuario Incorrecto");
+
         }
-        if (compraRequest.getNumeroTarjeta().length() == 8) {
+        if (compraRequest.getNumeroTarjeta().length() != 8) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número de tarjeta Incorrecto");
         }
-        if (compraRequest.getCodigoTarjeta().length() == 3) {
+        if (compraRequest.getCodigoTarjeta().length() != 3) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo de tarjeta Incorrecto");
         }
 

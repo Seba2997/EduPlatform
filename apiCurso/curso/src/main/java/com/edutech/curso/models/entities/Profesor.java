@@ -3,6 +3,9 @@ package com.edutech.curso.models.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,6 +28,7 @@ public class Profesor {
     private String email;
 
     @OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Curso> cursos = new ArrayList<>();
 
 }

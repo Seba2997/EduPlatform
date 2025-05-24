@@ -54,7 +54,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
         try {
 
             Usuario usuario = webClient.get()
-                                        .uri("http://localhost:8082/api/user/" + idUsuario)
+                                        .uri("http://localhost:8082/user/" + idUsuario)
                                         .retrieve()
                                         .bodyToMono(Usuario.class)
                                         .block();
@@ -83,6 +83,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
             return cursoRepo.save(nuevoCurso);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso");
         }
     }
