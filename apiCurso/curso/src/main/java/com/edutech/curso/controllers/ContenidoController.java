@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.edutech.curso.models.entities.Contenido;
 import com.edutech.curso.models.requests.ContenidoCrear;
 import com.edutech.curso.models.requests.ContenidoEditar;
@@ -26,28 +25,28 @@ public class ContenidoController {
     @Autowired
     private ContenidoService contenidoService;
 
-    @GetMapping("contenidos/")
+    @GetMapping("/")
     public List<Contenido> traerTodos(){
         return contenidoService.obtenerTodos();
     }
 
-    @GetMapping("cusrsos/contenidos/{id}")
+    @GetMapping("/{id}")
     public Contenido traerPorId(@PathVariable int id) {
         return contenidoService.obtenerContenidoPorId(id);
     }
 
-    @PostMapping("contenidos/")
+    @PostMapping("/{id}")
     public Contenido registrarContenido(@Valid @RequestBody ContenidoCrear nuevo){
         return contenidoService.registrar(nuevo);
     }
 
-    @PutMapping("contenidos/{id}")
+    @PutMapping("/{id}")
     public Contenido modificar(@PathVariable Integer id, @Valid @RequestBody ContenidoEditar body) {
     body.setIdContenido(id); 
     return contenidoService.modificar(body);
     }
 
-    @DeleteMapping("contenidos/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
     contenidoService.eliminarContenido(id);
     return ResponseEntity.ok("Contenido Eliminado");

@@ -7,5 +7,5 @@ public class Curso {
     private int id;
     private String nombreCurso;
     private Boolean estado;
-    private String precio;
+    private int precio;
 }
