@@ -2,6 +2,7 @@ package com.eduplatform.api_inscripcion.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.eduplatform.api_inscripcion.entities.Curso;
 import com.eduplatform.api_inscripcion.entities.Inscripcion;
 import com.eduplatform.api_inscripcion.entities.Usuario;
+import com.eduplatform.api_inscripcion.entities.request.CompraRequest;
+import com.eduplatform.api_inscripcion.entities.responses.CompraResponse;
 import com.eduplatform.api_inscripcion.repositories.InscripcionRepository;
 
 
@@ -23,7 +26,8 @@ public class InscripcionService {
     @Autowired
     private WebClient webClient;
     
-    public Inscripcion inscribirUsuario(int idEstudiante, int idCurso){
+    public CompraResponse inscribirUsuario(int idEstudiante, int idCurso, CompraRequest compraRequest){
+        CompraResponse response = new CompraResponse();
 
         Usuario usuario = webClient.get()
                                     .uri("http://localhost:8082/user/{id}", idEstudiante)
@@ -52,7 +56,17 @@ public class InscripcionService {
 
         if (curso.getEstado()==false) {
         throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
-    }
+        }
+        //validacion de tarjeta de compras
+        if (compraRequest.getNombreTarjeta().equalsIgnoreCase(usuario.getName())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre de usuario Incorrecto");
+        }
+        if (compraRequest.getNumeroTarjeta().length() == 8) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número de tarjeta Incorrecto");
+        }
+        if (compraRequest.getCodigoTarjeta().length() == 3) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo de tarjeta Incorrecto");
+        }
 
         Inscripcion inscripcion= new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
@@ -64,14 +78,28 @@ public class InscripcionService {
         inscripcion.setPrecioCurso(curso.getPrecio());
         inscripcion.setFechaInscripcion(LocalDate.now());
         inscripcionRepo.save(inscripcion);
-        return inscripcion;
-    }
+        
+        Random random = new Random();
+        int numeroAleatorio = 100000 + random.nextInt(900000); 
+
+        response.setNumeroBoleta(numeroAleatorio);
+        response.setNombreUsuario(usuario.getName());
+        response.setPrecio(curso.getPrecio());
+        response.setEmail(usuario.getEmail());
+        response.setNombreCurso(curso.getNombreCurso());
+        response.setFechaCompra(LocalDate.now());
+        response.setMensaje("Compra/inscripción exitosa al curso: " + curso.getNombreCurso());
+
+        return response;
+}
+
+
 
     public List<Inscripcion> obtenerTodos() {
         return inscripcionRepo.findAll();
     }
 
-    public Inscripcion obtenerInscripcionId(Integer id) {
+    public Inscripcion obtenerInscripcionId(int id) {
     Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
     if (inscripcion == null) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
@@ -85,7 +113,8 @@ public void eliminar(int id) {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripción no encontrada");
     }
     inscripcionRepo.delete(inscripcion);
-} 
-
-
+    }
 }
+
+
+

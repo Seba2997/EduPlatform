@@ -55,7 +55,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
                                         .block();
 
             if (usuario == null || usuario.getRol() != Rol.PROFESOR) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo los coordinadores pueden crear cursos");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo los profesores pueden crear cursos");
             }
 
 
@@ -118,3 +118,4 @@ public List<Curso> obtenerPorNombre(String nombre) {
     }
 
 }
+
