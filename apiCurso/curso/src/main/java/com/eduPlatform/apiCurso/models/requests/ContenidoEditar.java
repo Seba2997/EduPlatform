@@ -1,4 +1,4 @@
-package com.edutech.curso.models.requests;
+package com.eduPlatform.apiCurso.models.requests;
 
 import lombok.Data;
 

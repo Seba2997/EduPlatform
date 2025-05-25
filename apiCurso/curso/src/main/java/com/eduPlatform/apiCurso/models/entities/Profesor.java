@@ -1,4 +1,4 @@
-package com.edutech.curso.models.entities;
+package com.eduPlatform.apiCurso.models.entities;
 
 import java.util.ArrayList;
 import java.util.List;

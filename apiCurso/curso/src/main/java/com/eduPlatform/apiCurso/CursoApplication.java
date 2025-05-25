@@ -1,4 +1,4 @@
-package com.edutech.curso;
+package com.eduPlatform.apiCurso;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

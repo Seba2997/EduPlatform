@@ -1,8 +1,10 @@
-package com.edutech.curso.repositories;
+package com.eduPlatform.apiCurso.repositories;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import com.edutech.curso.models.entities.Curso;
+
+import com.eduPlatform.apiCurso.models.entities.Curso;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository

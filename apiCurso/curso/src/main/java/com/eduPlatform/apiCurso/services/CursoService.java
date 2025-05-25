@@ -1,4 +1,4 @@
-package com.edutech.curso.services;
+package com.eduPlatform.apiCurso.services;
 
 import java.util.List;
 
@@ -7,14 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
-import com.edutech.curso.models.entities.Curso;
-import com.edutech.curso.models.entities.Profesor;
-import com.edutech.curso.models.requests.CursoCrear;
-import com.edutech.curso.models.requests.CursoEditar;
-import com.edutech.curso.models.user.Rol;
-import com.edutech.curso.models.user.Usuario;
-import com.edutech.curso.repositories.CursoRepository;
-import com.edutech.curso.repositories.ProfesorRepository;
+
+import com.eduPlatform.apiCurso.models.entities.Curso;
+import com.eduPlatform.apiCurso.models.entities.Profesor;
+import com.eduPlatform.apiCurso.models.requests.CursoCrear;
+import com.eduPlatform.apiCurso.models.requests.CursoEditar;
+import com.eduPlatform.apiCurso.models.user.Rol;
+import com.eduPlatform.apiCurso.models.user.Usuario;
+import com.eduPlatform.apiCurso.repositories.CursoRepository;
+import com.eduPlatform.apiCurso.repositories.ProfesorRepository;
 
 
 

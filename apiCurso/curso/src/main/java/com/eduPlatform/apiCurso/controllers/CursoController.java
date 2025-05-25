@@ -1,4 +1,4 @@
-package com.edutech.curso.controllers;
+package com.eduPlatform.apiCurso.controllers;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edutech.curso.models.entities.Curso;
-import com.edutech.curso.models.requests.CursoCrear;
-import com.edutech.curso.models.requests.CursoEditar;
-import com.edutech.curso.services.CursoService;
+import com.eduPlatform.apiCurso.models.entities.Curso;
+import com.eduPlatform.apiCurso.models.requests.CursoCrear;
+import com.eduPlatform.apiCurso.models.requests.CursoEditar;
+import com.eduPlatform.apiCurso.services.CursoService;
 
 import jakarta.validation.Valid;
 

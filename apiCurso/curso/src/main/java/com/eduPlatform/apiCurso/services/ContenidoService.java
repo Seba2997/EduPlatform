@@ -1,4 +1,4 @@
-package com.edutech.curso.services;
+package com.eduPlatform.apiCurso.services;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.edutech.curso.models.entities.Contenido;
-import com.edutech.curso.models.entities.Curso;
-import com.edutech.curso.models.requests.ContenidoCrear;
-import com.edutech.curso.models.requests.ContenidoEditar;
-import com.edutech.curso.repositories.ContenidoRepository;
+import com.eduPlatform.apiCurso.models.entities.Contenido;
+import com.eduPlatform.apiCurso.models.entities.Curso;
+import com.eduPlatform.apiCurso.models.requests.ContenidoCrear;
+import com.eduPlatform.apiCurso.models.requests.ContenidoEditar;
+import com.eduPlatform.apiCurso.repositories.ContenidoRepository;
 
 @Service
 public class ContenidoService {

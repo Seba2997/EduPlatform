@@ -1,4 +1,4 @@
-package com.edutech.curso.config;
+package com.eduPlatform.apiCurso.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
