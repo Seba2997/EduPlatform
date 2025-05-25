@@ -110,13 +110,6 @@ public List<Curso> obtenerPorNombre(String nombre) {
         return cursoRepo.save(curso);
     }
 
-/* public void eliminar(int id) {
-    Curso curso = cursoRepo.findById(id).orElse(null);
-    if (curso == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
-    }
-    cursoRepo.delete(curso);
-} */
 
     public Curso cambiarEstado(int id) {
         Curso curso = cursoRepo.findById(id).orElse(null);

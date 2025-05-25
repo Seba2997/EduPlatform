@@ -59,11 +59,7 @@ public class CursoController {
         return cursoService.obtenerPorNombre(nombre);
     }
 
-/*     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
-    cursoService.eliminar(id);
-    return ResponseEntity.ok("Curso Eliminado");
-} */
+
 
     @PutMapping("/{id}/estado")
     public ResponseEntity<String> cambiarEstado(@PathVariable Integer id) {
