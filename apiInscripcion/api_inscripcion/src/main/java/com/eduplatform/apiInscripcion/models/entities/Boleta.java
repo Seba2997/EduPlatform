@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.models.entities;
+package com.eduplatform.apiInscripcion.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 

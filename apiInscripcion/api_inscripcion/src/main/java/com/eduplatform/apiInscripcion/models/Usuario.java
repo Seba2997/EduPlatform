@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.models;
+package com.eduplatform.apiInscripcion.models;
 
 import lombok.Data;
 

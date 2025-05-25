@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.controllers;
+package com.eduplatform.apiInscripcion.controllers;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eduplatform.api_inscripcion.models.entities.Inscripcion;
-import com.eduplatform.api_inscripcion.models.request.CompraRequest;
-import com.eduplatform.api_inscripcion.models.responses.CompraResponse;
-import com.eduplatform.api_inscripcion.services.InscripcionService;
+import com.eduplatform.apiInscripcion.models.entities.Inscripcion;
+import com.eduplatform.apiInscripcion.models.request.CompraRequest;
+import com.eduplatform.apiInscripcion.models.responses.CompraResponse;
+import com.eduplatform.apiInscripcion.services.InscripcionService;
 
 @RestController
 @RequestMapping("/inscripciones")

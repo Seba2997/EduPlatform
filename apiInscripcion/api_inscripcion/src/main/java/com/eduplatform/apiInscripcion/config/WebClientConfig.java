@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.config;
+package com.eduplatform.apiInscripcion.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

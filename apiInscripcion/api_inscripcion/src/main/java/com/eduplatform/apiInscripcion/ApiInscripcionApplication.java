@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion;
+package com.eduplatform.apiInscripcion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.eduplatform.api_inscripcion.services;
+package com.eduplatform.apiInscripcion.services;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.eduplatform.api_inscripcion.models.Curso;
-import com.eduplatform.api_inscripcion.models.Usuario;
-import com.eduplatform.api_inscripcion.models.entities.Boleta;
-import com.eduplatform.api_inscripcion.models.entities.Inscripcion;
-import com.eduplatform.api_inscripcion.models.request.CompraRequest;
-import com.eduplatform.api_inscripcion.models.responses.CompraResponse;
-import com.eduplatform.api_inscripcion.repositories.BoletaRepository;
-import com.eduplatform.api_inscripcion.repositories.InscripcionRepository;
+import com.eduplatform.apiInscripcion.models.Curso;
+import com.eduplatform.apiInscripcion.models.Usuario;
+import com.eduplatform.apiInscripcion.models.entities.Boleta;
+import com.eduplatform.apiInscripcion.models.entities.Inscripcion;
+import com.eduplatform.apiInscripcion.models.request.CompraRequest;
+import com.eduplatform.apiInscripcion.models.responses.CompraResponse;
+import com.eduplatform.apiInscripcion.repositories.BoletaRepository;
+import com.eduplatform.apiInscripcion.repositories.InscripcionRepository;
 
 
 @Service
