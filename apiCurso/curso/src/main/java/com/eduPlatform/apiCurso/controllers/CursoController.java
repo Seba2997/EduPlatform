@@ -61,7 +61,7 @@ public class CursoController {
 
 
 
-    @PutMapping("/{id}/estado")
+    @PutMapping("/estado/{id}")
     public ResponseEntity<String> cambiarEstado(@PathVariable Integer id) {
     Curso cursoActualizado = cursoService.cambiarEstado(id);
     String mensaje;

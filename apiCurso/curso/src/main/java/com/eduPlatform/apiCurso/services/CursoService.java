@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.eduPlatform.apiCurso.models.entities.Curso;
 import com.eduPlatform.apiCurso.models.entities.Profesor;
 import com.eduPlatform.apiCurso.models.requests.CursoCrear;
