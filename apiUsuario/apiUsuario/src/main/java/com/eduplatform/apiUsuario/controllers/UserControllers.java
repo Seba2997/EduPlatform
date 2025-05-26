@@ -60,9 +60,9 @@ public class UserControllers {
         User usuarioModificado = userService.cambiarEstado(id);
         String mensaje;
         if (usuarioModificado.getActive()) {
-            mensaje = "Usuario activado correctamente";
+            mensaje = "Usuario" + usuarioModificado.getName() + "activado correctamente";
         } else {
-            mensaje = "Usuario desactivado correctamente";
+            mensaje = "Usuario" + usuarioModificado.getName() + "desactivado correctamente";
         }
         return ResponseEntity.ok(mensaje);
     }   
