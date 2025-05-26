@@ -61,6 +61,26 @@
             "projectName": "gateway",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CursoApplication<apiCurso>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduPlatform.apiCurso.CursoApplication",
+            "projectName": "apiCurso",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiInscripcionApplication<apiInscripcion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduplatform.apiInscripcion.ApiInscripcionApplication",
+            "projectName": "apiInscripcion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
