@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
-import com.eduplatform.apiUsuario.models.request.UserStatusUpdate;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.services.UserService;
 
@@ -56,17 +55,16 @@ public class UserControllers {
         return userService.modificar(body);
     }
 
-    @PutMapping("/estado")
-    public ResponseEntity<String> cambiarEstado(@RequestBody UserStatusUpdate body) {
-        userService.cambiarEstado(body.getId(), body.isActive());
-
-        String estado;
-        if (body.isActive()) {
-            estado = "activado";
+    @PutMapping("/estado/{id}")
+    public ResponseEntity<String> cambiarEstado(@PathVariable int id) {
+        User usuarioModificado = userService.cambiarEstado(id);
+        String mensaje;
+        if (usuarioModificado.getActive()) {
+            mensaje = "Usuario activado correctamente";
         } else {
-            estado = "desactivado";
+            mensaje = "Usuario desactivado correctamente";
         }
-        return ResponseEntity.ok("Usuario " + estado + " correctamente.");
+        return ResponseEntity.ok(mensaje);
     }   
 
 }

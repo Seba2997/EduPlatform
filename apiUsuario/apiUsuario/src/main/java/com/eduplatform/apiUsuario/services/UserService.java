@@ -79,17 +79,17 @@ public class UserService {
         }
     }
 
-    public void cambiarEstado(int id, boolean activo) {
+    public User cambiarEstado(int id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
-        try {
-            user.setActive(activo);
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al cambiar el estado del usuario");
+        if (user.getActive() == true) {
+            user.setActive(false);
+        } else {
+            user.setActive(true);
         }
+        return userRepository.save(user);
     }
 
 }
