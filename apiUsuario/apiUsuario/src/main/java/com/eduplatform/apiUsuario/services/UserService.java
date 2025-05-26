@@ -62,16 +62,20 @@ public class UserService {
         return hasheador.encode(password);
     }
 
-    public User modificar(UserUpdate modiicado){
-        User user = userRepository.findById(modiicado.getId()).orElse(null);
+    public User modificar(UserUpdate modificado){
+        User user = userRepository.findById(modificado.getId()).orElse(null);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
         try {
-            user.setName(modiicado.getName());
-            user.setPhone(modiicado.getPhone());
-            if (modiicado.getPassword() != null) {
-                user.setPassword(generateHash(modiicado.getPassword()));
+            if (modificado.getName() != null) {
+                user.setName(modificado.getName());
+            }
+            if (modificado.getPhone() != null) {
+                user.setPhone(modificado.getPhone());
+                }
+            if (modificado.getPassword() != null) {
+                user.setPassword(generateHash(modificado.getPassword()));
             }
             return userRepository.save(user);
         } catch (Exception e) {

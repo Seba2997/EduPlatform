@@ -50,8 +50,9 @@ public class UserControllers {
         return userService.registrar(user);
     }
 
-    @PutMapping("/modificar")
-    public User modificar(@Valid @RequestBody UserUpdate body){
+    @PutMapping("/modificar/{id}")
+    public User modificar(@PathVariable int id,@Valid @RequestBody UserUpdate body){
+        body.setId(id);
         return userService.modificar(body);
     }
 
@@ -60,9 +61,9 @@ public class UserControllers {
         User usuarioModificado = userService.cambiarEstado(id);
         String mensaje;
         if (usuarioModificado.getActive()) {
-            mensaje = "Usuario" + usuarioModificado.getName() + "activado correctamente";
+            mensaje = "Usuario " + usuarioModificado.getName() + " activado correctamente";
         } else {
-            mensaje = "Usuario" + usuarioModificado.getName() + "desactivado correctamente";
+            mensaje = "Usuario " + usuarioModificado.getName() + " desactivado correctamente";
         }
         return ResponseEntity.ok(mensaje);
     }   
