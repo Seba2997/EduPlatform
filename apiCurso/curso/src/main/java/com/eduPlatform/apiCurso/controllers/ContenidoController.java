@@ -49,7 +49,7 @@ public class ContenidoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarCurso(@PathVariable int id) {
+    public ResponseEntity<String> eliminarContenido(@PathVariable int id) {
         contenidoService.eliminarContenido(id);
         return ResponseEntity.ok("Contenido Eliminado");
     }
