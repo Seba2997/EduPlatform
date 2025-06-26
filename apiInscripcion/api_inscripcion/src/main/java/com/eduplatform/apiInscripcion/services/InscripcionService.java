@@ -40,6 +40,9 @@ public class InscripcionService {
         Inscripcion inscripcion = registrarInscripcion(usuario, curso);
         int numeroBoleta = generarNumeroBoletaUnico();
         Boleta boleta = crearYGuardarBoleta(inscripcion, curso, numeroBoleta);
+        if (boleta == null) {
+            throw new RuntimeException("Error al crear la boleta");
+        }
 
         return construirRespuestaCompra(usuario, curso, numeroBoleta);
     }
