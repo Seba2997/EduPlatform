@@ -31,85 +31,102 @@ public class InscripcionService {
     @Autowired
     private BoletaRepository boletaRepository;
     
-    public CompraResponse inscribirUsuario(int idEstudiante, int idCurso, CompraRequest compraRequest){
-        CompraResponse response = new CompraResponse();
+    public CompraResponse inscribirUsuario(int idEstudiante, int idCurso, CompraRequest compraRequest) {
+        Usuario usuario = obtenerUsuario(idEstudiante);
+        Curso curso = obtenerCurso(idCurso);
+        validarInscripcion(usuario, curso);
+        validarCompra(usuario, compraRequest);
 
+        Inscripcion inscripcion = registrarInscripcion(usuario, curso);
+        int numeroBoleta = generarNumeroBoletaUnico();
+        Boleta boleta = crearYGuardarBoleta(inscripcion, curso, numeroBoleta);
+
+        return construirRespuestaCompra(usuario, curso, numeroBoleta);
+    }
+
+    private Usuario obtenerUsuario(int idEstudiante) {
         Usuario usuario = webClient.get()
-                                    .uri("http://localhost:8082/user/{id}", idEstudiante)
-                                    .retrieve()
-                                    .bodyToMono(Usuario.class)
-                                    .block();
-
-        if(usuario == null){
+                                   .uri("http://localhost:8082/user/{id}", idEstudiante)
+                                   .retrieve()
+                                   .bodyToMono(Usuario.class)
+                                   .block();
+        if (usuario == null) {
             throw new RuntimeException("Usuario no encontrado");
         }
+        return usuario;
+    }
 
-
+    private Curso obtenerCurso(int idCurso) {
         Curso curso = webClient.get()
-                                    .uri("http://localhost:8081/cursos/{id}", idCurso)
-                                    .retrieve()
-                                    .bodyToMono(Curso.class)
-                                    .block();
-
-        if(curso == null){
+                               .uri("http://localhost:8081/cursos/{id}", idCurso)
+                               .retrieve()
+                               .bodyToMono(Curso.class)
+                               .block();
+        if (curso == null) {
             throw new RuntimeException("Curso no encontrado");
         }
-        
-        if(inscripcionRepo.existsByIdEstudianteAndIdCurso(idEstudiante, idCurso)){
+        return curso;
+    }
+
+    private void validarInscripcion(Usuario usuario, Curso curso) {
+        if (inscripcionRepo.existsByIdEstudianteAndIdCurso(usuario.getId(), curso.getId())) {
             throw new RuntimeException("Usuario ya inscrito");
         }
-
-
-        if (curso.getEstado()==false) {
+        if (!curso.getEstado()) {
             throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
         }
-        
-        //validacion de tarjeta de compras
-        if (!compraRequest.getNombreTarjeta().equals(usuario.getName())){
+    }
+
+    private void validarCompra(Usuario usuario, CompraRequest compraRequest) {
+        if (!compraRequest.getNombreTarjeta().equals(usuario.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre de usuario Incorrecto");
         }
-        
         if (compraRequest.getNumeroTarjeta().length() != 8) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número de tarjeta Incorrecto");
         }
-
         if (compraRequest.getCodigoTarjeta().length() != 3) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo de tarjeta Incorrecto");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Código de tarjeta Incorrecto");
         }
+    }
 
-        Inscripcion inscripcion= new Inscripcion();
+    private Inscripcion registrarInscripcion(Usuario usuario, Curso curso) {
+        Inscripcion inscripcion = new Inscripcion();
         inscripcion.setIdEstudiante(usuario.getId());
         inscripcion.setNombreEstudiante(usuario.getName());
         inscripcion.setEmailEstudiante(usuario.getEmail());
-        
         inscripcion.setIdCurso(curso.getId());
         inscripcion.setNombreCurso(curso.getNombreCurso());
         inscripcion.setFechaInscripcion(LocalDate.now());
-        inscripcionRepo.save(inscripcion);
-        
-        Random random = new Random();
+        return inscripcionRepo.save(inscripcion);
+    }
 
-        int numeroAleatorio= 100000 + random.nextInt(900000); 
-        
-        while (boletaRepository.existsByNumeroBoleta(numeroAleatorio)){
-            numeroAleatorio= 100000 + random.nextInt(900000); 
-        }
-            
-        response.setNumeroBoleta(numeroAleatorio);
+    private int generarNumeroBoletaUnico() {
+        Random random = new Random();
+        int numero;
+        do {
+            numero = 100000 + random.nextInt(900000);
+        } while (boletaRepository.existsByNumeroBoleta(numero));
+        return numero;
+    }
+
+    private Boleta crearYGuardarBoleta(Inscripcion inscripcion, Curso curso, int numeroBoleta) {
+        Boleta boleta = new Boleta();
+        boleta.setNumeroBoleta(numeroBoleta);
+        boleta.setPrecio(curso.getPrecio());
+        boleta.setFechaCompra(LocalDate.now().toString());
+        boleta.setInscripcion(inscripcion);
+        return boletaRepository.save(boleta);
+    }
+
+    private CompraResponse construirRespuestaCompra(Usuario usuario, Curso curso, int numeroBoleta) {
+        CompraResponse response = new CompraResponse();
+        response.setNumeroBoleta(numeroBoleta);
         response.setNombreUsuario(usuario.getName());
         response.setPrecio(curso.getPrecio());
         response.setEmail(usuario.getEmail());
         response.setNombreCurso(curso.getNombreCurso());
         response.setFechaCompra(LocalDate.now());
         response.setMensaje("Compra/inscripción exitosa al curso: " + curso.getNombreCurso());
-
-        Boleta boleta = new Boleta();
-        boleta.setNumeroBoleta(response.getNumeroBoleta());
-        boleta.setPrecio(response.getPrecio());
-        boleta.setFechaCompra(response.getFechaCompra().toString());
-        boleta.setInscripcion(inscripcion);
-        boletaRepository.save(boleta);
-        
         return response;
     }
 
