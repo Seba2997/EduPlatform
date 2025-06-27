@@ -1,11 +1,10 @@
-package com.eduPlatform.curso;
+package com.eduPlatform.apiCurso;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.eduPlatform.apiCurso.CursoApplication;
 
-@SpringBootTest(classes = CursoApplication.class)
+@SpringBootTest()
 class CursoApplicationTests {
 
 	@Test
