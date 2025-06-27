@@ -37,36 +37,29 @@ public class ContenidoServiceTests {
 
     @Test
     void registrar_DeberiaGuardarContenidoCorrectamente() {
-        // Arrange: crear el request que simula el formulario
+        
         ContenidoCrear crear = new ContenidoCrear();
         crear.setContenido("Programación orientada a objetos");
 
-        // Simular un curso ya existente
         Curso cursoSimulado = new Curso();
-        cursoSimulado.setId(1); // este ID sí puede estar, es del curso, no autogenerado
+        cursoSimulado.setId(1); 
         cursoSimulado.setNombreCurso("Java Básico");
 
-        // Simular el contenido que se espera que se retorne (el repositorio lo "guarda")
         Contenido contenidoGuardado = new Contenido();
         contenidoGuardado.setContenido("Programación orientada a objetos");
         contenidoGuardado.setTituloContenido("Programación orientada a objetos");
         contenidoGuardado.setCurso(cursoSimulado);
-        // NO seteamos el ID porque la base lo autogenera
 
-        // Simular comportamiento del cursoService y del repositorio
         when(cursoService.obtenerCursoPorId(1)).thenReturn(cursoSimulado);
         when(contenidoRepo.save(any(Contenido.class))).thenReturn(contenidoGuardado);
 
-        // Act: ejecutar el método que estamos probando
         Contenido resultado = contenidoService.registrar(crear, 1);
 
-        // Assert: verificar que el contenido fue creado correctamente
         assertNotNull(resultado);
         assertEquals("Programación orientada a objetos", resultado.getContenido());
         assertEquals("Programación orientada a objetos", resultado.getTituloContenido());
         assertEquals("Java Básico", resultado.getCurso().getNombreCurso());
 
-        // Verificar que los mocks fueron llamados como esperábamos
         verify(cursoService).obtenerCursoPorId(1);
         verify(contenidoRepo).save(any(Contenido.class));
     }
