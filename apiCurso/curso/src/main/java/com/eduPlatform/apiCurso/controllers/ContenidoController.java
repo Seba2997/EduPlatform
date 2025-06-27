@@ -51,7 +51,7 @@ public class ContenidoController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Modificar contenido",
-            description = "Modifica un nuevo contenido en el sistema.")
+            description = "Modifica un contenido en el sistema.")
     public Contenido modificar(@PathVariable Integer id, @Valid @RequestBody ContenidoEditar body) {
         body.setIdContenido(id); 
         return contenidoService.modificar(body);
@@ -59,7 +59,7 @@ public class ContenidoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar contenido",
-            description = "Elimina un nuevo contenido en el sistema.")
+            description = "Elimina un contenido en el sistema.")
     public ResponseEntity<String> eliminarContenido(@PathVariable int id) {
         contenidoService.eliminarContenido(id);
         return ResponseEntity.ok("Contenido Eliminado");

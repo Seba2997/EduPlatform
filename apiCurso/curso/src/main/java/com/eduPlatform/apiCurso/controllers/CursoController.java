@@ -38,8 +38,8 @@ public class CursoController {
 
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtiene todos los cursos por id",
-            description = "Devuelve una lista de todos los cursos registrados en el sistema por id.")
+    @Operation(summary = "Obtener curso por id",
+            description = "Obtener un curso registrados en el sistema por id.")
     public Curso traerPorId(@PathVariable int id) {
         return cursoService.obtenerCursoPorId(id);
     }
@@ -54,22 +54,22 @@ public class CursoController {
     
     @PostMapping("/{idUsuario}")
     @Operation(summary = "Crea un nuevo curso",
-            description = "Crea un cursos en el sistema.")
+            description = "Crea un nuevo curso en el sistema.")
     public Curso crearCurso(@Valid @RequestBody CursoCrear nuevo, @PathVariable int idUsuario){
         return cursoService.registrar(nuevo, idUsuario);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Modifica un nuevo curso",
-            description = "Modifica un cursos en el sistema.")
+    @Operation(summary = "Modificar un curso",
+            description = "Modifica un curso en el sistema.")
     public Curso modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body) {
     body.setId(id); 
     return cursoService.modificar(body);
     }
     
     @GetMapping("/buscar")
-    @Operation(summary = "Busca un curso",
-            description = "busca un curso por su nombre.")
+    @Operation(summary = "Busca un curso por nommbre",
+            description = "Busca un curso por su nombre en el sistema.")
     public List<Curso> obtenerPorNombre(@RequestParam String nombre) {
         return cursoService.obtenerPorNombre(nombre);
     }
@@ -78,7 +78,7 @@ public class CursoController {
 
     @PutMapping("/estado/{id}")
     @Operation(summary = "Cambiar estado de un curso",
-            description = "Cambia el estado de un curso de activo a inactivo o biciversa.")
+            description = "Cambia el estado de un curso entre Activo/Inactivo.")
     public ResponseEntity<String> cambiarEstado(@PathVariable Integer id) {
     Curso cursoActualizado = cursoService.cambiarEstado(id);
     String mensaje;
