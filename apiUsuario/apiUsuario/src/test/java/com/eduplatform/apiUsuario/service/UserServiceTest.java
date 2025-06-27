@@ -26,7 +26,17 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @Test
+    void probraHash() {
+        String passsword = "password123";
+        String hash = userService.generateHash(passsword);
+        boolean coincide = userService.validarPassword(passsword, hash);
+        assertEquals(true, coincide);
+    }
+
+    
+    @Test
     public void testRegistrarUsuario() {
+        
         //Crear solicitud de usuario
         UserCrear nuevo = new UserCrear();
         nuevo.setName("Juan");
@@ -35,10 +45,10 @@ public class UserServiceTest {
         nuevo.setPassword("password123");
         nuevo.setRol(Rol.ESTUDIANTE);
 
-        // Ejecutar
+        //Ejecutar
         User creado = userService.registrar(nuevo);
 
-        // Verificar
+        //Verificar
         assertNotNull(creado.getId());
         assertEquals("Juan", creado.getName());
         assertEquals("juan@example.com", creado.getEmail());
@@ -56,7 +66,7 @@ public class UserServiceTest {
     
     @Test
     public void testRegistrarUsuarioConDatosInvalidos() {
-        // Caso 1: Email faltante
+        //Email faltante
         UserCrear sinEmail = new UserCrear();
         sinEmail.setName("Usuario");
         sinEmail.setPhone("12345678");
@@ -65,7 +75,7 @@ public class UserServiceTest {
         
         assertThrows(ResponseStatusException.class, () -> userService.registrar(sinEmail));
 
-        // Caso 2: Contraseña faltante
+        //Contraseña faltante
         UserCrear sinPassword = new UserCrear();
         sinPassword.setName("Usuario");
         sinPassword.setEmail("usuario@example.com");
