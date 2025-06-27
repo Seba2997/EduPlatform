@@ -57,10 +57,17 @@ public class UserService {
 
     }
 
-    private String generateHash(String password){
+    public String generateHash(String password){
         PasswordEncoder hasheador = new BCryptPasswordEncoder();
         return hasheador.encode(password);
     }
+
+    public boolean validarPassword(String password, String hash) {
+        BCryptPasswordEncoder passsPasswordEncoder = new BCryptPasswordEncoder();
+        return passsPasswordEncoder.matches(password, hash);
+    }
+
+    
 
     public User modificar(UserUpdate modificado){
         User user = userRepository.findById(modificado.getId()).orElse(null);
