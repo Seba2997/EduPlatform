@@ -27,13 +27,13 @@ public class UserServiceTest {
 
     @Test
     public void testRegistrarUsuario() {
-        // Crear solicitud de usuario
+        //Crear solicitud de usuario
         UserCrear nuevo = new UserCrear();
         nuevo.setName("Juan");
         nuevo.setEmail("juan@example.com");
         nuevo.setPhone("12345678");
         nuevo.setPassword("password123");
-        nuevo.setRol(Rol.ESTUDIANTE); // Usamos el Enum directamente
+        nuevo.setRol(Rol.ESTUDIANTE);
 
         // Ejecutar
         User creado = userService.registrar(nuevo);
@@ -45,11 +45,11 @@ public class UserServiceTest {
         assertEquals("12345678", creado.getPhone());
         assertNotNull(creado.getPassword());
         assertNotEquals("password123", creado.getPassword());
-        assertEquals(Rol.ESTUDIANTE, creado.getRol()); // Verificación con Enum
+        assertEquals(Rol.ESTUDIANTE, creado.getRol());
         assertTrue(creado.getActive());
         assertNotNull(creado.getDateCreated());
 
-        // Limpieza
+        
         userRepository.deleteById(creado.getId());
     }
 
