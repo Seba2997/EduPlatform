@@ -1,4 +1,4 @@
-package com.edutech;
+package com.eduPlatform;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +17,7 @@ import com.eduPlatform.apiCurso.repositories.CursoRepository;
 import com.eduPlatform.apiCurso.services.CursoService;
 
 
-@SpringBootTest
+@SpringBootTest(classes = CursoService.class)
 public class CursoServiceTests {
     
     @Autowired
