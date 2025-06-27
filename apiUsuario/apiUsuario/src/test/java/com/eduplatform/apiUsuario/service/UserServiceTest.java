@@ -1,8 +1,8 @@
-package com.eduplatform;
+package com.eduplatform.apiUsuario.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.eduplatform.apiUsuario.ApiUsuarioApplication;
+
 import com.eduplatform.apiUsuario.models.Rol;
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
 
-@SpringBootTest(classes = ApiUsuarioApplication.class)
+@SpringBootTest
 public class UserServiceTest {
     
     @Autowired
