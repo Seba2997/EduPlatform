@@ -33,4 +33,10 @@ public class Contenido {
     @JsonBackReference
     private Curso curso;
 
+
+    public void setId(int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+    }
+
 }
