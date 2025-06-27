@@ -16,6 +16,7 @@ import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,37 +27,51 @@ public class UserControllers {
     private UserService userService;
 
     @GetMapping("/")
+    @Operation(summary = "Obtiene todos los usuarios",
+               description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
     public List<User> obtenerTodo(){
         return userService.obtenerTodos();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtiene un usuario por su ID",
+               description = "Devuelve los detalles de un usuario específico basado en su ID.")
     public User obtenerUno(@PathVariable int id){
         return userService.obtenerUno(id);
     }
 
     @GetMapping("/email/{email}")
+    @Operation(summary = "Obtiene un usuario por su email",
+               description = "Devuelve los detalles de un usuario específico basado en su email.")
     public User obtenerPorEmail(@PathVariable String email){
         return userService.obtenerPorEmail(email);
     }
 
     @GetMapping("/activos")
+    @Operation(summary = "Obtiene todos los usuarios activos",
+               description = "Devuelve una lista de todos los usuarios que están activos en el sistema.")
     public List<User> obtenerActivos(){
         return userService.obtenerActivos();
     }
 
     @PostMapping("/registrar")
+    @Operation(summary = "Registra un nuevo usuario",
+               description = "Crea un nuevo usuario en el sistema con los datos proporcionados.")
     public User registrar(@Valid @RequestBody UserCrear user){
         return userService.registrar(user);
     }
 
     @PutMapping("/modificar/{id}")
+    @Operation(summary = "Modifica un usuario existente",
+               description = "Actualiza los detalles de un usuario específico basado en su ID.")
     public User modificar(@PathVariable int id,@Valid @RequestBody UserUpdate body){
         body.setId(id);
         return userService.modificar(body);
     }
 
+    
     @PutMapping("/estado/{id}")
+    @Operation(summary = "Cambia el estado de un usuario (activo/desactivado)")
     public ResponseEntity<String> cambiarEstado(@PathVariable int id) {
         User usuarioModificado = userService.cambiarEstado(id);
         String mensaje;
