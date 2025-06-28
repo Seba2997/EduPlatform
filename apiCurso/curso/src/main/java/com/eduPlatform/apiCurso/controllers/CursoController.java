@@ -72,7 +72,7 @@ public class CursoController {
         return cursoAssembler.toModelSoloModificar(nuevoCurso);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/modificar/{id}")
     @Operation(summary = "Modificar un curso",
             description = "Modifica un curso en el sistema.")
     public EntityModel<Curso> modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body) {
