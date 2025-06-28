@@ -16,7 +16,7 @@ public class CursoModelAssembler implements RepresentationModelAssembler<Curso, 
     @Override
     public @NonNull EntityModel<Curso> toModel(@NonNull Curso curso) {
         return EntityModel.of(curso,
-            linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel(),
+            linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel()
         );
     }
 
