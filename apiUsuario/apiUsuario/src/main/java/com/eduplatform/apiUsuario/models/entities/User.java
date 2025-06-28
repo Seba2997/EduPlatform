@@ -3,6 +3,7 @@ package com.eduplatform.apiUsuario.models.entities;
 import java.util.Date;
 
 import com.eduplatform.apiUsuario.models.Rol;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,7 +37,8 @@ public class User {
     
     private String phone;
 
-    @Column(nullable = false)   
+    @Column(nullable = false)
+    @JsonIgnore   
     private String password;
 
     @Column(name = "fecha_creacion")

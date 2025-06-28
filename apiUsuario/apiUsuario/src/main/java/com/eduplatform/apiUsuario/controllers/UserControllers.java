@@ -3,6 +3,8 @@ package com.eduplatform.apiUsuario.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,33 +13,51 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.eduplatform.apiUsuario.assemblers.UserModelAssembler;
 import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.services.UserService;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/user")
 public class UserControllers {
     
     @Autowired
+    private UserModelAssembler assembler;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping("/")
     @Operation(summary = "Obtiene todos los usuarios",
                description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
-    public List<User> obtenerTodo(){
-        return userService.obtenerTodos();
-    }
+    public CollectionModel<EntityModel<User>> obtenerTodo() {
+        List<User> usuarios = userService.obtenerTodos();
+
+        List<EntityModel<User>> usuariosConLinks = usuarios.stream()
+            .map(assembler::toModel)
+            .toList();
+
+        return CollectionModel.of(usuariosConLinks,
+            linkTo(methodOn(UserControllers.class).obtenerTodo()).withSelfRel());
+}
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtiene un usuario por su ID",
                description = "Devuelve los detalles de un usuario específico basado en su ID.")
-    public User obtenerUno(@PathVariable int id){
-        return userService.obtenerUno(id);
+    public EntityModel<User> obtenerUno(@PathVariable int id){
+        User user = userService.obtenerUno(id);
+        return assembler.toModel(user);
     }
 
     @GetMapping("/email/{email}")
