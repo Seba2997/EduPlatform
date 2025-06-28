@@ -49,7 +49,8 @@ public class UserControllers {
             .toList();
 
         return CollectionModel.of(usuariosConLinks,
-            linkTo(methodOn(UserControllers.class).obtenerTodo()).withSelfRel());
+            linkTo(methodOn(UserControllers.class).obtenerTodo()).withSelfRel(),
+            linkTo(methodOn(UserControllers.class).obtenerActivos()).withRel("usuariosActivos"));
 }
 
     @GetMapping("/{id}")
@@ -57,7 +58,7 @@ public class UserControllers {
                description = "Devuelve los detalles de un usuario específico basado en su ID.")
     public EntityModel<User> obtenerUno(@PathVariable int id){
         User user = userService.obtenerUno(id);
-        return assembler.toModel(user);
+        return assembler.toModelSoloModificar(user);
     }
 
     @GetMapping("/email/{email}")
