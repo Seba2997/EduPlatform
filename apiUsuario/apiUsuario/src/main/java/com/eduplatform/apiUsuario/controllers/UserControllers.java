@@ -77,8 +77,9 @@ public class UserControllers {
     @PostMapping("/registrar")
     @Operation(summary = "Registra un nuevo usuario",
                description = "Crea un nuevo usuario en el sistema con los datos proporcionados.")
-    public User registrar(@Valid @RequestBody UserCrear user){
-        return userService.registrar(user);
+    public EntityModel<User> registrar(@Valid @RequestBody UserCrear user){
+        User nuevo = userService.registrar(user);
+        return assembler.toModelSoloModificar(nuevo);
     }
 
     @PutMapping("/modificar/{id}")
