@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.eduPlatform.apiCurso.controllers.CursoController;
@@ -13,12 +14,9 @@ import com.eduPlatform.apiCurso.models.entities.Curso;
 public class CursoModelAssembler implements RepresentationModelAssembler<Curso, EntityModel<Curso>> {
 
     @Override
-    public EntityModel<Curso> toModel(Curso curso) {
+    public @NonNull EntityModel<Curso> toModel(@NonNull Curso curso) {
         return EntityModel.of(curso,
             linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel(),
-            linkTo(methodOn(CursoController.class).traerTodos()).withRel("todos-los-cursos"),
-            linkTo(methodOn(CursoController.class).traerActivos()).withRel("cursos-activos"),
-            linkTo(methodOn(CursoController.class).modificar(curso.getId(), null)).withRel("modificar-curso")
         );
     }
 
