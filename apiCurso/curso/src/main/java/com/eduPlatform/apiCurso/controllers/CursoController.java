@@ -72,7 +72,7 @@ public class CursoController {
         return cursoAssembler.toModelSoloModificar(nuevoCurso);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/modificar/{id}")
     @Operation(summary = "Modificar un curso",
             description = "Modifica un curso en el sistema.")
     public EntityModel<Curso> modificar(@PathVariable Integer id, @Valid @RequestBody CursoEditar body) {
@@ -99,6 +99,6 @@ public class CursoController {
             description = "Cambia el estado de un curso entre Activo/Inactivo.")
     public EntityModel<Curso> cambiarEstado(@PathVariable Integer id) {
         Curso cursoActualizado = cursoService.cambiarEstado(id);
-        return cursoAssembler.toModel(cursoActualizado);
+        return cursoAssembler.toModelSoloActivos(cursoActualizado);
     }
 }
