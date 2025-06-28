@@ -85,19 +85,20 @@ class InscripcionServiceTest {
         assertEquals(2, result.size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testInscribirUsuario_Success() {
         Usuario usuario = mockUsuario();
         Curso curso = mockCurso();
         CompraRequest compraRequest = mockCompraRequest();
 
-        // Mock WebClient for Usuario
+        // Mock WebClient para Usuario
         when(webClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri("http://localhost:8082/user/{id}", usuario.getId())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(Usuario.class)).thenReturn(Mono.just(usuario));
 
-        // Mock WebClient for Curso
+        // Mock WebClient para Curso
         when(requestHeadersUriSpec.uri("http://localhost:8081/cursos/{id}", curso.getId())).thenReturn(requestHeadersSpec);
         when(responseSpec.bodyToMono(Curso.class)).thenReturn(Mono.just(curso));
         when(inscripcionRepo.existsByIdEstudianteAndIdCurso(usuario.getId(), curso.getId())).thenReturn(false);
@@ -108,6 +109,7 @@ class InscripcionServiceTest {
 
         when(boletaRepository.existsByNumeroBoleta(anyInt())).thenReturn(false);
 
+        // Mock Boleta
         Boleta boleta = new Boleta();
         boleta.setNumeroBoleta(123456);
         boleta.setPrecio(curso.getPrecio());
@@ -117,6 +119,7 @@ class InscripcionServiceTest {
 
         CompraResponse response = inscripcionService.inscribirUsuario(usuario.getId(), curso.getId(), compraRequest);
 
+        // Verificar que se llamaron los métodos correctos
         assertNotNull(response);
         assertEquals("Juan", response.getNombreUsuario());
         assertEquals("Java Básico", response.getNombreCurso());
