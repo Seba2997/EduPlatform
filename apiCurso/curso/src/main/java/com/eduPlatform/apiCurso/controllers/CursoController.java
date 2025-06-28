@@ -99,6 +99,6 @@ public class CursoController {
             description = "Cambia el estado de un curso entre Activo/Inactivo.")
     public EntityModel<Curso> cambiarEstado(@PathVariable Integer id) {
         Curso cursoActualizado = cursoService.cambiarEstado(id);
-        return cursoAssembler.toModel(cursoActualizado);
+        return cursoAssembler.toModelSoloActivos(cursoActualizado);
     }
 }
