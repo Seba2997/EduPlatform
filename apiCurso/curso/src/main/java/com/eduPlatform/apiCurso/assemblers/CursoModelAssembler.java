@@ -22,9 +22,24 @@ public class CursoModelAssembler implements RepresentationModelAssembler<Curso, 
         );
     }
 
-    public EntityModel<Curso> toModelSoloModificar(Curso curso) {
-        return EntityModel.of(curso,
-            linkTo(methodOn(CursoController.class).modificar(curso.getId(), null)).withRel("modificar-curso")
-        );
-    }
+    public EntityModel<Curso> toModelMostrarTodos(Curso curso) {
+    return EntityModel.of(curso,
+        linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel(),
+        linkTo(methodOn(CursoController.class).traerTodos()).withRel("todos-los-cursos")
+    );
+}
+
+public EntityModel<Curso> toModelSoloActivos(Curso curso) {
+    return EntityModel.of(curso,
+        linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel(),
+        linkTo(methodOn(CursoController.class).traerActivos()).withRel("cursos-activos")
+    );
+}
+
+public EntityModel<Curso> toModelSoloModificar(Curso curso) {
+    return EntityModel.of(curso,
+        linkTo(methodOn(CursoController.class).traerPorId(curso.getId())).withSelfRel(),
+        linkTo(methodOn(CursoController.class).modificar(curso.getId(), null)).withRel("modificar-curso")
+    );
+}
 }
