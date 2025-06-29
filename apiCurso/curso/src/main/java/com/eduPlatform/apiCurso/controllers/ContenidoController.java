@@ -56,7 +56,7 @@ public class ContenidoController {
                 description = "Crea un nuevo contenido asociado a un curso.")
     public EntityModel<Contenido> crearContenido(@PathVariable int idCurso, @Valid @RequestBody ContenidoCrear body) {
         Contenido creado = contenidoService.registrar(body, idCurso);
-        return contenidoAssembler.toModel(creado);
+        return contenidoAssembler.toModelSoloModificar(creado);
     }
 
     @PutMapping("/{id}")
