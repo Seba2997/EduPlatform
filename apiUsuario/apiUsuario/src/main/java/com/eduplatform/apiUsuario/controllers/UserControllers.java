@@ -48,7 +48,7 @@ public class UserControllers {
     }
 
 
-    @GetMapping("/")
+    @GetMapping("/obtenerTodo")
     @Operation(summary = "Obtiene todos los usuarios",
                description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
     public CollectionModel<EntityModel<User>> obtenerTodo() {
@@ -63,7 +63,7 @@ public class UserControllers {
             linkTo(methodOn(UserControllers.class).obtenerActivos()).withRel("usuariosActivos"));
 }
 
-    @GetMapping("/{id}")
+    @GetMapping("/obtenerUno{id}")
     @Operation(summary = "Obtiene un usuario por su ID",
                description = "Devuelve los detalles de un usuario específico basado en su ID.")
     public EntityModel<User> obtenerUno(@PathVariable int id){
