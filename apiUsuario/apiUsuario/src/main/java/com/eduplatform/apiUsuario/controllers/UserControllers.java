@@ -38,6 +38,16 @@ public class UserControllers {
     @Autowired
     private UserService userService;
 
+
+    @PostMapping("/registrar")
+    @Operation(summary = "Registra un nuevo usuario",
+               description = "Crea un nuevo usuario en el sistema con los datos proporcionados.")
+        public EntityModel<User> registrar(@Valid @RequestBody UserCrear user){
+        User nuevo = userService.registrar(user);
+        return assembler.toModelSoloModificar(nuevo);
+    }
+
+
     @GetMapping("/")
     @Operation(summary = "Obtiene todos los usuarios",
                description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
@@ -75,13 +85,6 @@ public class UserControllers {
         return userService.obtenerActivos();
     }
 
-    @PostMapping("/registrar")
-    @Operation(summary = "Registra un nuevo usuario",
-               description = "Crea un nuevo usuario en el sistema con los datos proporcionados.")
-    public EntityModel<User> registrar(@Valid @RequestBody UserCrear user){
-        User nuevo = userService.registrar(user);
-        return assembler.toModelSoloModificar(nuevo);
-    }
 
     @PutMapping("/modificar/{id}")
     @Operation(summary = "Modifica un usuario existente",
