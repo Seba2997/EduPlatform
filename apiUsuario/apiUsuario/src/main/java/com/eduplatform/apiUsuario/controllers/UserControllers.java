@@ -63,7 +63,7 @@ public class UserControllers {
             linkTo(methodOn(UserControllers.class).obtenerActivos()).withRel("usuariosActivos"));
 }
 
-    @GetMapping("/obtenerUno{id}")
+    @GetMapping("/obtenerUno/{id}")
     @Operation(summary = "Obtiene un usuario por su ID",
                description = "Devuelve los detalles de un usuario específico basado en su ID.")
     public EntityModel<User> obtenerUno(@PathVariable int id){
