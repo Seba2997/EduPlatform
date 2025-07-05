@@ -1,7 +1,8 @@
 package com.eduplatform.apiUsuario.models.request;
 
-import com.eduplatform.apiUsuario.models.Rol;
+import com.eduplatform.apiUsuario.models.RolNombre;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,5 +31,6 @@ public class UserCrear {
     private String password;
 
     @NotNull(message = "El rol no puede estar vacío")
-    private Rol rol;
+    @Schema(example = "ESTUDIANTE", description = "Rol del usuario (ADMIN, PROFESOR, ESTUDIANTE, COORDINADOR)")
+    private RolNombre rol;
 }

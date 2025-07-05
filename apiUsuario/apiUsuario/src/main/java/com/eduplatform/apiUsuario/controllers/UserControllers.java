@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.eduplatform.apiUsuario.assemblers.UserModelAssembler;
-import com.eduplatform.apiUsuario.models.entities.User;
+import com.eduplatform.apiUsuario.assemblers.UserDTOModelAssembler;
+import com.eduplatform.apiUsuario.models.RolNombre;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
+import com.eduplatform.apiUsuario.models.response.UserDTO;
 import com.eduplatform.apiUsuario.services.UserService;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -25,84 +28,116 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 
 
 @RestController
 @RequestMapping("/user")
 public class UserControllers {
-    
-    @Autowired
-    private UserModelAssembler assembler;
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
-    @Operation(summary = "Obtiene todos los usuarios",
-               description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
-    public CollectionModel<EntityModel<User>> obtenerTodo() {
-        List<User> usuarios = userService.obtenerTodos();
+    @Autowired
+    private UserDTOModelAssembler dtoAssembler;
 
-        List<EntityModel<User>> usuariosConLinks = usuarios.stream()
-            .map(assembler::toModel)
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/dto")
+    @Operation(summary = "Obtiene todos los usuarios ",
+               description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
+    public CollectionModel<EntityModel<UserDTO>> obtenerTodos() {
+        List<UserDTO> usuarios = userService.obtenerTodosDTO();
+
+        List<EntityModel<UserDTO>> usuariosConLinks = usuarios.stream()
+            .map(dtoAssembler::generarModeloGeneral)
             .toList();
 
         return CollectionModel.of(usuariosConLinks,
-            linkTo(methodOn(UserControllers.class).obtenerTodo()).withSelfRel(),
-            linkTo(methodOn(UserControllers.class).obtenerActivos()).withRel("usuariosActivos"));
-}
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Obtiene un usuario por su ID",
-               description = "Devuelve los detalles de un usuario específico basado en su ID.")
-    public EntityModel<User> obtenerUno(@PathVariable int id){
-        User user = userService.obtenerUno(id);
-        return assembler.toModelSoloModificar(user);
+            linkTo(methodOn(UserControllers.class).obtenerTodos()).withSelfRel());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @GetMapping("/dto/{id}")
+    @Operation(summary = "Obtiene un usuario por su ID.",
+               description = "Devuelve los detalles de un usuario específico basado en su ID.")
+    public EntityModel<UserDTO> obtenerUno(@PathVariable int id) {
+        UserDTO user = userService.obtenerUnoDTO(id);
+        return dtoAssembler.generarModeloGeneral(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/email/{email}")
     @Operation(summary = "Obtiene un usuario por su email",
                description = "Devuelve los detalles de un usuario específico basado en su email.")
-    public User obtenerPorEmail(@PathVariable String email){
-        return userService.obtenerPorEmail(email);
+    public EntityModel<UserDTO> obtenerPorEmail(@PathVariable String email) {
+        UserDTO user = UserDTO.fromEntity(userService.obtenerPorEmail(email));
+        return dtoAssembler.modeloSoloLectura(user);
     }
 
-    @GetMapping("/activos")
-    @Operation(summary = "Obtiene todos los usuarios activos",
-               description = "Devuelve una lista de todos los usuarios que están activos en el sistema.")
-    public List<User> obtenerActivos(){
-        return userService.obtenerActivos();
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @GetMapping("/rol/{rol}")
+    @Operation(summary = "Lista usuarios por rol",
+               description = "Devuelve una lista de usuarios que tienen el rol especificado.")
+    public CollectionModel<EntityModel<UserDTO>> listarPorRol(
+            @Parameter(description = "Rol a buscar: ADMIN, ESTUDIANTE, PROFESOR, COORDINADOR")
+            @PathVariable RolNombre rol) {
+
+        List<UserDTO> usuarios = userService.obtenerPorRol(rol);
+
+        List<EntityModel<UserDTO>> usuariosConLinks = usuarios.stream()
+            .map(dtoAssembler::modeloSoloLectura)
+            .toList();
+
+        return CollectionModel.of(usuariosConLinks,
+            linkTo(methodOn(UserControllers.class).listarPorRol(rol)).withSelfRel());
     }
 
-    @PostMapping("/registrar")
-    @Operation(summary = "Registra un nuevo usuario",
-               description = "Crea un nuevo usuario en el sistema con los datos proporcionados.")
-    public EntityModel<User> registrar(@Valid @RequestBody UserCrear user){
-        User nuevo = userService.registrar(user);
-        return assembler.toModelSoloModificar(nuevo);
-    }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @PutMapping("/modificar/{id}")
     @Operation(summary = "Modifica un usuario existente",
                description = "Actualiza los detalles de un usuario específico basado en su ID.")
-    public User modificar(@PathVariable int id,@Valid @RequestBody UserUpdate body){
+    public ResponseEntity<String> modificar(@PathVariable int id, @Valid @RequestBody UserUpdate body) {
         body.setId(id);
-        return userService.modificar(body);
+        userService.modificar(body);
+        return ResponseEntity.ok("Usuario modificado correctamente");
     }
 
-    
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/registrar")
+    @Operation(summary = "Registra un usuario con cualquier rol (ADMIN)", description = "Permite al admin registrar usuarios con roles personalizados (ADMIN, PROFESOR, ESTUDIANTE, COORDINADOR)")
+    public ResponseEntity<String> registrar(@Valid @RequestBody UserCrear user){
+        userService.registrarComo(user, user.getRol());
+        return ResponseEntity.ok("Usuario registrado correctamente como " + user.getRol());
+    }
+
+    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR')")
     @PutMapping("/estado/{id}")
     @Operation(summary = "Cambia el estado de un usuario (activo/desactivado)")
     public ResponseEntity<String> cambiarEstado(@PathVariable int id) {
-        User usuarioModificado = userService.cambiarEstado(id);
-        String mensaje;
-        if (usuarioModificado.getActive()) {
-            mensaje = "Usuario " + usuarioModificado.getName() + " activado correctamente";
-        } else {
-            mensaje = "Usuario " + usuarioModificado.getName() + " desactivado correctamente";
-        }
+        var usuarioModificado = userService.cambiarEstado(id);
+        String mensaje = usuarioModificado.getActive()
+            ? "Usuario " + usuarioModificado.getName() + " activado correctamente"
+            : "Usuario " + usuarioModificado.getName() + " desactivado correctamente";
         return ResponseEntity.ok(mensaje);
-    }   
+    }
 
+    @PostMapping("/signup")
+    @Operation(summary = "Registro libre de estudiantes", description = "Permite a cualquier persona registrarse como estudiante.")
+    public EntityModel<UserDTO> registroLibre(@Valid @RequestBody UserCrear user) {
+        var nuevo = userService.registrarComo(user, RolNombre.ESTUDIANTE);
+        return dtoAssembler.modeloRegistro(UserDTO.fromEntity(nuevo));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/mi-perfil")
+    @Operation(summary = "Datos del usuario actual", description = "Devuelve los datos del usuario autenticado.")
+    public EntityModel<UserDTO> miPerfil() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("🟡 Email autenticado: [" + email + "]");
+        UserDTO user = UserDTO.fromEntity(userService.obtenerPorEmail(email));
+        return dtoAssembler.modeloPerfil(user);
+    }
+
+    
 }
