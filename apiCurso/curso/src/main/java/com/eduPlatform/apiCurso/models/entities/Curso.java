@@ -39,12 +39,19 @@ public class Curso {
     private int precio;
 
     @ManyToOne
-    @JoinColumn(name = "profesor_id", nullable = false)
-    private Profesor profesor;
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
 
-    
+
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Contenido> contenidos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
+    private List<Evaluacion> evaluaciones = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "profesor_id", nullable = false)
+    private Profesor profesor;
 
 }
