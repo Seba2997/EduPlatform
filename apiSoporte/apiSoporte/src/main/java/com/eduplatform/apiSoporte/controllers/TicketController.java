@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +29,11 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
-    
+
     @Autowired
     private TicketService ticketService;
 
+    @PreAuthorize("hasAnyRole('ESTUDIANTE', 'PROFESOR', 'ADMIN', 'COORDINADOR')")
     @PostMapping("/crearTicket")
     @Operation(summary = "Crear un nuevo ticket", description = "Permite a un usuario crear un nuevo ticket de soporte.")
     public ResponseEntity<Ticket> crearTicket(@Valid @RequestBody TicketCrear ticketCrear) {
@@ -39,42 +41,38 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 
-    
-
-     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
     @Operation(summary = "Obtener todos los tickets")
     public ResponseEntity<List<Ticket>> obtenerTodos() {
         return ResponseEntity.ok(ticketService.obtenerTodos());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESOR', 'ESTUDIANTE')")
     @GetMapping("/{id}")
     @Operation(summary = "Obtener ticket por ID")
     public ResponseEntity<Ticket> obtenerPorId(@PathVariable int id) {
         return ResponseEntity.ok(ticketService.obtenerPorId(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESOR', 'ESTUDIANTE')")
     @GetMapping("/estado/{estado}")
     @Operation(summary = "Obtener tickets por estado (ABIERTO, EN_PROCESO, CERRADO)")
     public ResponseEntity<List<Ticket>> obtenerPorEstado(@PathVariable EstadoTicket estado) {
         return ResponseEntity.ok(ticketService.obtenerPorEstado(estado));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESOR', 'ESTUDIANTE')")
     @GetMapping("/email/{email}")
     @Operation(summary = "Obtener tickets por email del usuario")
     public ResponseEntity<List<Ticket>> obtenerPorEmail(@PathVariable String email) {
         return ResponseEntity.ok(ticketService.obtenerPorEmail(email));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{idTicket}/estado")
     @Operation(summary = "Cambiar estado de un ticket")
     public ResponseEntity<Ticket> cambiarEstado(@PathVariable int idTicket, @RequestBody EstadoRequest request) {
         return ResponseEntity.ok(ticketService.cambiarEstado(idTicket, request.getNuevoEstado()));
     }
-
-    
 }
-
-
-
-
-

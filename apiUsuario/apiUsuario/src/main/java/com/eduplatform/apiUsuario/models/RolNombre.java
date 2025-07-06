@@ -5,6 +5,7 @@ public enum RolNombre {
     COORDINADOR,
     PROFESOR,
     ESTUDIANTE,
+    SOPORTE
 }
 
 
