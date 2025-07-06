@@ -12,23 +12,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "evaluacion")
+@Table(name = "evaluacion_estudiante")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Evaluacion {
-
+public class EvaluacionEstudiante {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
-    private String titulo;
-    
-    private String pregunta;
-    
-    private int puntajeMaximo;
-    
+
+    private String respuesta;
+
+    private Integer puntajeObtenido;
+
     @ManyToOne
-    @JoinColumn(name = "curso_id", nullable = false)
-    private Curso curso;
+    @JoinColumn(name = "evaluacion_id", nullable = false)
+    private Evaluacion evaluacion;
+
+
 }

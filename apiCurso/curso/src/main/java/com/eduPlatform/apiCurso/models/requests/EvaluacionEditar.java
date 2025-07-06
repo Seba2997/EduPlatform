@@ -8,7 +8,7 @@ import lombok.Data;
 public class EvaluacionEditar  {
     private int id;
     private String titulo;
-    private String descripcion;
+    private String pregunta;
     private Integer puntajeMaximo;
 }    
 
