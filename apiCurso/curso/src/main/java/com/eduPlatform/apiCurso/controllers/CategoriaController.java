@@ -11,32 +11,36 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/categorias")
+@Tag(name = "Categorías", description = "Operaciones para gestionar las categorías de los cursos")
 public class CategoriaController {
 
     @Autowired
     private CategoriaService categoriaService;
 
-    //Obtener todas las categorías
+    @Operation(summary = "Obtener todas las categorías")
     @GetMapping
     public List<Categoria> obtenerTodas() {
         return categoriaService.obtenerTodos();
     }
 
-    //Obtener una categoría por ID
+    @Operation(summary = "Obtener categoría por ID")
     @GetMapping("/{id}")
     public Categoria obtenerPorId(@PathVariable Integer id) {
         return categoriaService.obtenerCategoriaPorId(id);
     }
 
-    //Crear una nueva categoría
+    @Operation(summary = "Crear una nueva categoría")
     @PostMapping
     public Categoria crear(@RequestBody CategoriaCrear categoriaCrear) {
         return categoriaService.crearCategoria(categoriaCrear);
     }
 
-    //Modificar una categoría existente
+    @Operation(summary = "Modificar una categoría existente")
     @PutMapping
     public Categoria modificar(@RequestBody CategoriaEditar categoriaEditar) {
         return categoriaService.modificarCategoria(categoriaEditar);
