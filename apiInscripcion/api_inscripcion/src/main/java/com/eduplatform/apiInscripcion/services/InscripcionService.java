@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,14 +26,23 @@ public class InscripcionService {
 
     @Autowired
     private InscripcionRepository inscripcionRepo;
+    
     @Autowired
-    private WebClient webClient;
+    private WebClient.Builder webClientBuilder;
 
     @Autowired
     private BoletaRepository boletaRepository;
-    
-    public CompraResponse inscribirUsuario(int idEstudiante, int idCurso, CompraRequest compraRequest) {
-        Usuario usuario = obtenerUsuario(idEstudiante);
+
+    private WebClient webClientConToken() {
+        String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
+        return webClientBuilder
+            .defaultHeader("Authorization", "Bearer " + token)
+            .build();
+    }
+
+    // Inscripción usando al usuario autenticado
+    public CompraResponse inscribirUsuarioAutenticado(int idCurso, CompraRequest compraRequest) {
+        Usuario usuario = obtenerUsuarioAutenticado();
         Curso curso = obtenerCurso(idCurso);
         validarInscripcion(usuario, curso);
         validarCompra(usuario, compraRequest);
@@ -47,24 +57,28 @@ public class InscripcionService {
         return construirRespuestaCompra(usuario, curso, numeroBoleta);
     }
 
-    private Usuario obtenerUsuario(int idEstudiante) {
-        Usuario usuario = webClient.get()
-                                   .uri("http://localhost:8082/user/{id}", idEstudiante)
-                                   .retrieve()
-                                   .bodyToMono(Usuario.class)
-                                   .block();
+    private Usuario obtenerUsuarioAutenticado() {
+        Usuario usuario = webClientConToken()
+            .get()
+            .uri("http://localhost:8082/user/mi-perfil")
+            .retrieve()
+            .bodyToMono(Usuario.class)
+            .block();
+
         if (usuario == null) {
-            throw new RuntimeException("Usuario no encontrado");
+            throw new RuntimeException("No se pudo obtener el usuario autenticado");
         }
         return usuario;
     }
 
     private Curso obtenerCurso(int idCurso) {
-        Curso curso = webClient.get()
-                               .uri("http://localhost:8081/cursos/{id}", idCurso)
-                               .retrieve()
-                               .bodyToMono(Curso.class)
-                               .block();
+        Curso curso = webClientConToken()
+            .get()
+            .uri("http://localhost:8081/cursos/{id}", idCurso)
+            .retrieve()
+            .bodyToMono(Curso.class)
+            .block();
+
         if (curso == null) {
             throw new RuntimeException("Curso no encontrado");
         }
@@ -76,7 +90,7 @@ public class InscripcionService {
             throw new RuntimeException("Usuario ya inscrito");
         }
         if (!curso.getEstado()) {
-            throw new RuntimeException("El curso con ID " + curso.getId() + " no está activo y no permite inscripciones.");
+            throw new RuntimeException("El curso no está activo y no permite inscripciones.");
         }
     }
 
@@ -138,14 +152,13 @@ public class InscripcionService {
     }
 
     public Inscripcion obtenerInscripcionId(int id) {
-        Inscripcion inscripcion = inscripcionRepo.findById(id).orElse(null);
-        if (inscripcion == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripcion no encontrado");
-        }
-        return inscripcion;
+        return inscripcionRepo.findById(id).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Inscripción no encontrada")
+        );
+    }
+
+    public List<Inscripcion> obtenerPorEmail(String email) {
+        return inscripcionRepo.findByEmailEstudiante(email);
     }
 
 }
-
-
-
