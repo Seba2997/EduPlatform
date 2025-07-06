@@ -9,5 +9,5 @@ import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
 
 @Repository
 public interface EvaluacionEstudianteRepository extends JpaRepository<EvaluacionEstudiante, Integer> {
-    List<EvaluacionEstudiante> findByEstudianteId(int estudianteId);
+    List<EvaluacionEstudiante> findByEvaluacionEstudianteid(int evaluacionEstudianteid);
 }
