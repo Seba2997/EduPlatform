@@ -1,41 +1,63 @@
 package com.eduPlatform.apiCurso.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.annotation.*;
+
+import com.eduPlatform.apiCurso.assemblers.ComentarioModelAssembler;
 import com.eduPlatform.apiCurso.models.entities.Comentario;
 import com.eduPlatform.apiCurso.models.requests.ComentarioCrear;
 import com.eduPlatform.apiCurso.models.requests.ComentarioEditar;
 import com.eduPlatform.apiCurso.services.ComentarioService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/comentarios")
-@Tag(name = "Comentarios", description = "Gestión de comentarios en los cursos")
 public class ComentarioController {
 
     @Autowired
     private ComentarioService comentarioService;
 
-    @Operation(summary = "Listar comentarios de un curso")
+    @Autowired
+    private ComentarioModelAssembler comentarioAssembler;
+
     @GetMapping("/curso/{cursoId}")
-    public List<Comentario> listarPorCurso(@PathVariable Integer cursoId) {
-        return comentarioService.listarPorCurso(cursoId);
+    @Operation(summary = "Lista comentarios de un curso",
+                description = "Devuelve todos los comentarios asociados a un curso específico.")
+    public CollectionModel<EntityModel<Comentario>> listarPorCurso(@PathVariable int cursoId) {
+        List<EntityModel<Comentario>> comentarios = comentarioService.listarPorCurso(cursoId)
+            .stream()
+            .map(comentarioAssembler::toModel)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(comentarios,
+            linkTo(methodOn(ComentarioController.class).listarPorCurso(cursoId)).withSelfRel());
     }
 
-    @Operation(summary = "Crear nuevo comentario")
     @PostMapping
-    public Comentario crear(@RequestBody ComentarioCrear comentarioCrear) {
-        return comentarioService.crearComentario(comentarioCrear);
+    @Operation(summary = "Crea un nuevo comentario",
+                description = "Crea un comentario para un curso determinado.")
+    public EntityModel<Comentario> crear(@Valid @RequestBody ComentarioCrear comentarioCrear) {
+        Comentario creado = comentarioService.crearComentario(comentarioCrear);
+        return comentarioAssembler.toModel(creado);
     }
 
-    @Operation(summary = "Editar un comentario existente")
-    @PutMapping
-    public Comentario editar(@RequestBody ComentarioEditar comentarioEditar) {
-        return comentarioService.editarComentario(comentarioEditar);
+    @PutMapping("/{id}")
+    @Operation(summary = "Modifica un comentario existente",
+                description = "Actualiza el contenido de un comentario.")
+    public EntityModel<Comentario> editar(@PathVariable int id, @Valid @RequestBody ComentarioEditar comentarioEditar) {
+        comentarioEditar.setId(id);
+        Comentario actualizado = comentarioService.editarComentario(comentarioEditar);
+        return comentarioAssembler.toModel(actualizado);
     }
+
+  
 }

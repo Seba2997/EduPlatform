@@ -16,7 +16,7 @@ public class EvaluacionModelAssembler implements RepresentationModelAssembler<Ev
     public @NonNull EntityModel<Evaluacion> toModel(@NonNull Evaluacion evaluacion) {
         return EntityModel.of(evaluacion,
             linkTo(methodOn(EvaluacionController.class).listarPorCurso(evaluacion.getCurso().getId())).withRel("evaluaciones-del-curso"),
-            linkTo(methodOn(EvaluacionController.class).modificarEvaluacion(null)).withRel("modificar-evaluacion"),
+            linkTo(methodOn(EvaluacionController.class).modificarEvaluacion(evaluacion.getId(), null)).withRel("modificar-evaluacion"),
             linkTo(methodOn(EvaluacionController.class).eliminarEvaluacion(evaluacion.getId())).withRel("eliminar-evaluacion")
         );
     }
