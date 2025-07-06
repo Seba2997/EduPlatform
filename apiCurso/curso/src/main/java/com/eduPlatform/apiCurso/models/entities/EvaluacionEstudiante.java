@@ -20,7 +20,7 @@ public class EvaluacionEstudiante {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int evaluacionEstudianteid;
 
     private String respuesta;
 

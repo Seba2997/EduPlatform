@@ -88,6 +88,16 @@
             "projectName": "apiInscripcion",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiReporteApplication<apiReporte>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.eduplatform.apiReporte.ApiReporteApplication",
+            "projectName": "apiReporte",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

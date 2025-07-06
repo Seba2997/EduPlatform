@@ -25,8 +25,8 @@ public class EvaluacionEstudianteService {
     @Autowired
     private EvaluacionRepository evaluacionRepo;
 
-    //@Autowired
-    //private EvaluacionEstudianteService evaluacionEetudianteService;
+//@Autowired
+//private EvaluacionEstudianteService evaluacionEetudianteService;
 
     // El estudiante responde (crea una respuesta)
     public EvaluacionEstudiante responder(EvaluacionEstudianteCrear crear) {
