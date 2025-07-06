@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.eduPlatform.apiCurso.models.entities.Curso;
@@ -12,6 +13,7 @@ import com.eduPlatform.apiCurso.models.requests.EvaluacionCrear;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEditar;
 import com.eduPlatform.apiCurso.repositories.EvaluacionRepository;
 
+@Service
 public class EvaluacionService {
     
     @Autowired
