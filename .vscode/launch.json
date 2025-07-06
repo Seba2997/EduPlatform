@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApiSoporteApplication",
+            "request": "launch",
+            "mainClass": "com.eduplatform.apiSoporte.ApiSoporteApplication",
+            "projectName": "apiSoporte"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-CursoApplication<curso>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
