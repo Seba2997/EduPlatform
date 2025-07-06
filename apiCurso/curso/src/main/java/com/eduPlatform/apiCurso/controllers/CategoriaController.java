@@ -1,48 +1,68 @@
 package com.eduPlatform.apiCurso.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.annotation.*;
+
+import com.eduPlatform.apiCurso.assemblers.CategoriaModelAssembler;
 import com.eduPlatform.apiCurso.models.entities.Categoria;
 import com.eduPlatform.apiCurso.models.requests.CategoriaCrear;
 import com.eduPlatform.apiCurso.models.requests.CategoriaEditar;
 import com.eduPlatform.apiCurso.services.CategoriaService;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequestMapping("/categorias")
-@Tag(name = "Categorías", description = "Operaciones para gestionar las categorías de los cursos")
 public class CategoriaController {
 
     @Autowired
     private CategoriaService categoriaService;
 
-    @Operation(summary = "Obtener todas las categorías")
-    @GetMapping
-    public List<Categoria> obtenerTodas() {
-        return categoriaService.obtenerTodos();
+    @Autowired
+    private CategoriaModelAssembler assembler;
+
+    @GetMapping("/")
+    @Operation(summary = "Lista todas las categorías",
+               description = "Devuelve una lista de todas las categorías registradas.")
+    public CollectionModel<EntityModel<Categoria>> obtenerTodas() {
+        List<EntityModel<Categoria>> categorias = categoriaService.obtenerTodos()
+            .stream()
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(categorias,
+            linkTo(methodOn(CategoriaController.class).obtenerTodas()).withSelfRel());
     }
 
-    @Operation(summary = "Obtener categoría por ID")
     @GetMapping("/{id}")
-    public Categoria obtenerPorId(@PathVariable Integer id) {
-        return categoriaService.obtenerCategoriaPorId(id);
+    @Operation(summary = "Obtiene una categoría por ID",
+               description = "Devuelve los detalles de una categoría específica.")
+    public EntityModel<Categoria> obtenerPorId(@PathVariable int id) {
+        Categoria categoria = categoriaService.obtenerCategoriaPorId(id);
+        return assembler.toModel(categoria);
     }
 
-    @Operation(summary = "Crear una nueva categoría")
     @PostMapping
-    public Categoria crear(@RequestBody CategoriaCrear categoriaCrear) {
-        return categoriaService.crearCategoria(categoriaCrear);
+    @Operation(summary = "Crea una nueva categoría",
+               description = "Permite registrar una nueva categoría.")
+    public EntityModel<Categoria> crear(@Valid @RequestBody CategoriaCrear categoriaCrear) {
+        Categoria creada = categoriaService.crearCategoria(categoriaCrear);
+        return assembler.toModel(creada);
     }
 
-    @Operation(summary = "Modificar una categoría existente")
     @PutMapping
-    public Categoria modificar(@RequestBody CategoriaEditar categoriaEditar) {
-        return categoriaService.modificarCategoria(categoriaEditar);
+    @Operation(summary = "Modifica una categoría existente",
+               description = "Permite actualizar los datos de una categoría.")
+    public EntityModel<Categoria> modificar(@Valid @RequestBody CategoriaEditar categoriaEditar) {
+        Categoria actualizada = categoriaService.modificarCategoria(categoriaEditar);
+        return assembler.toModel(actualizada);
     }
 }
