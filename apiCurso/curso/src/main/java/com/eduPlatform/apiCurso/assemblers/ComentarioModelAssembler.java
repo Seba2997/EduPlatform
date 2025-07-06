@@ -16,7 +16,7 @@ public class ComentarioModelAssembler implements RepresentationModelAssembler<Co
     public @NonNull EntityModel<Comentario> toModel(@NonNull Comentario comentario) {
         return EntityModel.of(comentario,
             linkTo(methodOn(ComentarioController.class).listarPorCurso(comentario.getCurso().getId())).withRel("comentarios-del-curso"),
-            linkTo(methodOn(ComentarioController.class).editar(null)).withRel("modificar-comentario")
+            linkTo(methodOn(ComentarioController.class).editar(comentario.getId(), null)).withRel("modificar-comentario")
         );
     }
 }
