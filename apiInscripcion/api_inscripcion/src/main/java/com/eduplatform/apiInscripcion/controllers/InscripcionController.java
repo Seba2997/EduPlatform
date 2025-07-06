@@ -3,6 +3,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,34 +33,54 @@ public class InscripcionController {
     @Autowired
     private InscripcionModelAssembler assembler;
 
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @PostMapping("/inscribir")
+    @Operation(summary = "Inscribe al usuario autenticado en un curso",
+               description = "Permite a un estudiante autenticado inscribirse en un curso.")
+    public CompraResponse inscribirUsuarioAutenticado(@RequestParam int idCurso, @RequestBody CompraRequest compraRequest) {
+        return inscripcionService.inscribirUsuarioAutenticado(idCurso, compraRequest);
+        }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'SOPORTE', 'COORDINADOR', 'PROFESOR')")
     @GetMapping("/")
     @Operation(summary = "Obtiene todas las inscripciones",
-               description = "Devuelve una lista de todas las inscripciones registradas en el sistema.")
-    public CollectionModel<EntityModel<Inscripcion>> traerTodos(){
+               description = "Devuelve una lista de todas las inscripciones registradas.")
+    public CollectionModel<EntityModel<Inscripcion>> traerTodos() {
         List<Inscripcion> inscripciones = inscripcionService.obtenerTodos();
-        
+
         List<EntityModel<Inscripcion>> inscripcionesConLinks = inscripciones.stream()
             .map(assembler::toModel)
             .toList();
-            
+
         return CollectionModel.of(inscripcionesConLinks,
             linkTo(methodOn(InscripcionController.class).traerTodos()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SOPORTE', 'COORDINADOR', 'PROFESOR')")
+    @GetMapping("/obtenerUno{id}")
     @Operation(summary = "Obtiene una inscripción por su ID",
-               description = "Devuelve los detalles de una inscripción específica basada en su ID.")
+               description = "Devuelve los detalles de una inscripción específica.")
     public EntityModel<Inscripcion> obtenerUno(@PathVariable int id) {
         Inscripcion inscripcion = inscripcionService.obtenerInscripcionId(id);
         return assembler.toModel(inscripcion);
     }
 
-    @PostMapping("/inscribir")
-    @Operation(summary = "Inscribe a un usuario en un curso",
-               description = "Permite inscribir a un estudiante en un curso específico utilizando los datos de la tarjeta de compra.")
-    public CompraResponse InscribirUsuario(@RequestParam int idEstudiante, @RequestParam int idCurso, @RequestBody CompraRequest datoTarjeta){
-        return inscripcionService.inscribirUsuario(idEstudiante, idCurso, datoTarjeta);
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @GetMapping("/mis-inscripciones")
+    @Operation(summary = "Inscripciones del usuario autenticado", description = "Devuelve todas las inscripciones del usuario autenticado.")
+    public CollectionModel<EntityModel<Inscripcion>> obtenerInscripcionesUsuario() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<Inscripcion> inscripciones = inscripcionService.obtenerPorEmail(email);
+
+        List<EntityModel<Inscripcion>> modelos = inscripciones.stream()
+            .map(assembler::toModel)
+            .toList();
+
+        return CollectionModel.of(modelos,
+            linkTo(methodOn(InscripcionController.class).obtenerInscripcionesUsuario()).withSelfRel());
     }
 
 
+
+    
 }
