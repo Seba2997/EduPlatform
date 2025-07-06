@@ -10,5 +10,6 @@ public class CursoCrear {
     private Boolean estado;
     private Integer precio;
 
+    private String CategoriaNombre;
 
 }

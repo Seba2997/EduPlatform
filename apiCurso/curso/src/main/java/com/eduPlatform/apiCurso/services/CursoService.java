@@ -7,12 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.eduPlatform.apiCurso.models.entities.Categoria;
 import com.eduPlatform.apiCurso.models.entities.Curso;
 import com.eduPlatform.apiCurso.models.entities.Profesor;
 import com.eduPlatform.apiCurso.models.requests.CursoCrear;
 import com.eduPlatform.apiCurso.models.requests.CursoEditar;
 import com.eduPlatform.apiCurso.models.user.Rol;
 import com.eduPlatform.apiCurso.models.user.Usuario;
+import com.eduPlatform.apiCurso.repositories.CategoriaRepository;
 import com.eduPlatform.apiCurso.repositories.CursoRepository;
 import com.eduPlatform.apiCurso.repositories.ProfesorRepository;
 
@@ -29,6 +32,9 @@ public class CursoService {
     @Autowired
     private ProfesorRepository profesorRepo;
 
+    @Autowired
+    private CategoriaRepository categoriaRepo;
+
     public List<Curso> obtenerTodos() {
         return cursoRepo.findAll();
     }
@@ -43,9 +49,9 @@ public class CursoService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
     }
     return curso;
-}
+    }
 
-public List<Curso> obtenerPorNombre(String nombre) {
+    public List<Curso> obtenerPorNombre(String nombre) {
         return cursoRepo.findByNombreCurso(nombre);
     }
     
@@ -72,6 +78,17 @@ public List<Curso> obtenerPorNombre(String nombre) {
                 profesor = profesorRepo.save(nuevo);
             }
 
+            //CATEGORÍA: buscar por nombre y reemplazar
+            String nuevoNombreCategoria = cursoCrear.getCategoriaNombre();
+            if (nuevoNombreCategoria == null || nuevoNombreCategoria.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de la categoría es obligatorio");
+            }
+            Categoria categoria = categoriaRepo.findByNombreCategoriaIgnoreCase(nuevoNombreCategoria);
+            if (categoria == null) {
+            categoria = new Categoria();// No existe → crear nueva
+            }           
+            categoria.setNombreCategoria(nuevoNombreCategoria);// Existe o es nueva → actualizamos el nombre
+            categoria = categoriaRepo.save(categoria);
 
             Curso nuevoCurso = new Curso();
             nuevoCurso.setEstado(true); 
@@ -80,6 +97,7 @@ public List<Curso> obtenerPorNombre(String nombre) {
             nuevoCurso.setEstado(cursoCrear.getEstado());
             nuevoCurso.setPrecio(cursoCrear.getPrecio());
             nuevoCurso.setProfesor(profesor);
+            nuevoCurso.setCategoria(categoria);
             return cursoRepo.save(nuevoCurso);
 
         } catch (Exception e) {
@@ -89,22 +107,22 @@ public List<Curso> obtenerPorNombre(String nombre) {
     }
 
 
-    public Curso modificar(CursoEditar modificado) {
-        Curso curso = cursoRepo.findById(modificado.getId()).orElse(null);
+    public Curso modificar(CursoEditar cursoEditar) {
+        Curso curso = cursoRepo.findById(cursoEditar.getId()).orElse(null);
         if (curso == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
         }
-        if (modificado.getNombreCurso() != null) {
-            curso.setNombreCurso(modificado.getNombreCurso());
+        if (cursoEditar.getNombreCurso() != null) {
+            curso.setNombreCurso(cursoEditar.getNombreCurso());
         }
-        if (modificado.getDescripcion() != null) {
-            curso.setDescripcion(modificado.getDescripcion());
+        if (cursoEditar.getDescripcion() != null) {
+            curso.setDescripcion(cursoEditar.getDescripcion());
         }   
-        if (modificado.getEstado()!= null) {
-            curso.setEstado(modificado.getEstado());
+        if (cursoEditar.getEstado()!= null) {
+            curso.setEstado(cursoEditar.getEstado());
         }    
-        if (modificado.getPrecio()!= null) {
-            curso.setPrecio(modificado.getPrecio());
+        if (cursoEditar.getPrecio()!= null) {
+            curso.setPrecio(cursoEditar.getPrecio());
         }  
         return cursoRepo.save(curso);
     }
