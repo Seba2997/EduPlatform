@@ -15,7 +15,7 @@ public class UserDTO {
     private String email;
     private String phone;
     private Date dateCreated;
-    private Boolean active;
+
     private List<String> roles;
 
     public static UserDTO fromEntity(User user) {
@@ -25,7 +25,7 @@ public class UserDTO {
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
         dto.setDateCreated(user.getDateCreated());
-        dto.setActive(user.getActive());
+
 
         List<String> nombresRoles = user.getRoles().stream()
         .map(rol -> rol.getNombre().name())  // Accede al enum y lo convierte a String

@@ -42,7 +42,7 @@ public class UserControllers {
     @Autowired
     private UserDTOModelAssembler dtoAssembler;
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR')")
     @GetMapping("/dto")
     @Operation(summary = "Obtiene todos los usuarios ",
                description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
@@ -57,7 +57,7 @@ public class UserControllers {
             linkTo(methodOn(UserControllers.class).obtenerTodos()).withSelfRel());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'PROFESOR')")
     @GetMapping("/dto/{id}")
     @Operation(summary = "Obtiene un usuario por su ID.",
                description = "Devuelve los detalles de un usuario específico basado en su ID.")
@@ -66,7 +66,7 @@ public class UserControllers {
         return dtoAssembler.generarModeloGeneral(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR', 'PROFESOR')")
     @GetMapping("/email/{email}")
     @Operation(summary = "Obtiene un usuario por su email",
                description = "Devuelve los detalles de un usuario específico basado en su email.")
