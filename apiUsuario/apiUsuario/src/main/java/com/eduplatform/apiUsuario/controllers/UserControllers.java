@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.eduplatform.apiUsuario.assemblers.UserDTOModelAssembler;
 import com.eduplatform.apiUsuario.models.RolNombre;
+import com.eduplatform.apiUsuario.models.entities.User;
 import com.eduplatform.apiUsuario.models.request.UserCrear;
 import com.eduplatform.apiUsuario.models.request.UserUpdate;
 import com.eduplatform.apiUsuario.models.response.UserDTO;
@@ -138,6 +139,17 @@ public class UserControllers {
         UserDTO user = UserDTO.fromEntity(userService.obtenerPorEmail(email));
         return dtoAssembler.modeloPerfil(user);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/modificar-mi-perfil")
+    @Operation(summary = "Modificar perfil del usuario autenticado", description = "Permite al usuario autenticado actualizar su información personal.")
+    public ResponseEntity<String> modificarMiPerfil(@Valid @RequestBody UserUpdate body) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User usuario = userService.obtenerPorEmail(email);
+        body.setId(usuario.getId()); // establecemos el ID del usuario autenticado
+        userService.modificar(body);
+    return ResponseEntity.ok("Perfil actualizado correctamente");
+}
 
     
 }
