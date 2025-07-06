@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.eduplatform.apiSoporte.models.EstadoTicket;
 import com.eduplatform.apiSoporte.models.entities.Ticket;
@@ -56,6 +58,17 @@ public class TicketService {
         return ticketRepository.findAll().stream()
             .filter(t -> t.getEmailUsuario().equalsIgnoreCase(emailUsuario))
             .toList();
+    }
+
+    public Ticket responderTicket(int id, String respuesta, String emailSoporte, boolean cerrar) {
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
+
+        ticket.setRespuesta(respuesta);
+        ticket.setRespondidoPor(emailSoporte);
+        ticket.setEstado(cerrar ? EstadoTicket.CERRADO : EstadoTicket.EN_PROCESO);
+
+        return ticketRepository.save(ticket);
     }
 
 }

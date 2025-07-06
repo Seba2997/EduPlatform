@@ -39,6 +39,10 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private EstadoTicket estado;
     private String emailUsuario;
+
+    private String respuesta;
+    
+    private String respondidoPor;
     
     @PrePersist
     public void prePersist() {

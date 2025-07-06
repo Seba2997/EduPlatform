@@ -20,6 +20,7 @@ import com.eduplatform.apiSoporte.Services.TicketService;
 import com.eduplatform.apiSoporte.models.EstadoTicket;
 import com.eduplatform.apiSoporte.models.entities.Ticket;
 import com.eduplatform.apiSoporte.models.request.EstadoRequest;
+import com.eduplatform.apiSoporte.models.request.RespuestaTicketRequest;
 import com.eduplatform.apiSoporte.models.request.TicketCrear;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -85,5 +86,14 @@ public class TicketController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<Ticket> tickets = ticketService.obtenerPorEmail(email);
         return ResponseEntity.ok(tickets);
+    }
+
+    @PreAuthorize("hasRole('SOPORTE')")
+    @PutMapping("/{idTicket}/responder")
+    @Operation(summary = "Responder un ticket", description = "Permite al personal de soporte responder un ticket.")
+    public ResponseEntity<Ticket> responderTicket(@PathVariable int idTicket, @Valid @RequestBody RespuestaTicketRequest request) {
+        String emailSoporte = SecurityContextHolder.getContext().getAuthentication().getName();
+        Ticket ticket = ticketService.responderTicket(idTicket, request.getRespuesta(), emailSoporte, request.isCerrar());
+        return ResponseEntity.ok(ticket);
     }
 }
