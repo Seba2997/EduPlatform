@@ -35,11 +35,11 @@ public class EvaluacionEstudianteService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada");
         }
 
-//Pendiante Estudiante estudiante = evaluacionEetudianteService.obtenerPorId(crear.getEstudianteId());
+//***Pendiante Estudiante estudiante = evaluacionEetudianteService.obtenerPorId(crear.getEstudianteId());
 
         EvaluacionEstudiante nueva = new EvaluacionEstudiante();
         nueva.setEvaluacion(evaluacion);
-//Pendiente -> nueva.setEstudiante(estudiante);
+//***Pendiente -> nueva.setEstudiante(estudiante);
         nueva.setRespuesta(crear.getRespuesta());
 
         return evaluacionEstudianteRepo.save(nueva);
