@@ -55,7 +55,7 @@ public class ReporteService {
             Document document = new Document(pdfDoc);
 
             document.add(new Paragraph("Título: " + titulo).setBold());
-            document.add(new Paragraph("\nContenido JSON:"));
+            document.add(new Paragraph("\nReporte de Contenido:"));
             document.add(new Paragraph(contenido));
 
             document.close();
