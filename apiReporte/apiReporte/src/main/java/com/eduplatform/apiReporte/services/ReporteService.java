@@ -33,7 +33,7 @@ public class ReporteService {
     }
 
     public Reporte crearReporteDesdeApi(String endpoint, ReporteCrear dto) {
-        // Llamar a la otra API (por ejemplo /api/usuarios)
+
         Mono<String> respuestaMono = webClient.get()
                 .uri(endpoint)
                 .retrieve()
