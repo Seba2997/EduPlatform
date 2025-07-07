@@ -43,7 +43,7 @@ public class UserControllers {
     @Autowired
     private UserDTOModelAssembler dtoAssembler;
 
-    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
     @GetMapping("/dto")
     @Operation(summary = "Obtiene todos los usuarios ",
                description = "Devuelve una lista de todos los usuarios registrados en el sistema.")
@@ -67,7 +67,7 @@ public class UserControllers {
         return dtoAssembler.generarModeloGeneral(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
     @GetMapping("/email/{email}")
     @Operation(summary = "Obtiene un usuario por su email",
                description = "Devuelve los detalles de un usuario específico basado en su email.")
@@ -104,7 +104,7 @@ public class UserControllers {
         return ResponseEntity.ok("Usuario modificado correctamente");
     }
 
-    @PreAuthorize("hasRole('ADMIN', 'SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SOPORTE')")
     @PostMapping("/registrar")
     @Operation(summary = "Registra un usuario con cualquier rol (ADMIN)", description = "Permite al admin registrar usuarios con roles personalizados (ADMIN, PROFESOR, ESTUDIANTE, COORDINADOR, SOPORTE)")
     public ResponseEntity<String> registrar(@Valid @RequestBody UserCrear user){
@@ -112,7 +112,7 @@ public class UserControllers {
         return ResponseEntity.ok("Usuario registrado correctamente como " + user.getRol());
     }
 
-    @PreAuthorize("hasRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
     @PutMapping("/estado/{id}")
     @Operation(summary = "Cambia el estado de un usuario (activo/desactivado)")
     public ResponseEntity<String> cambiarEstado(@PathVariable int id) {

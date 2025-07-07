@@ -41,7 +41,7 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 
-    @PreAuthorize("hasRole('ADMIN', 'SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SOPORTE')")
     @GetMapping
     @Operation(summary = "Obtener todos los tickets", description = "Devuelve una lista de todos los tickets de soporte.")
     public ResponseEntity<List<Ticket>> obtenerTodos() {
@@ -71,7 +71,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.obtenerPorEmail(email));
     }
 
-    @PreAuthorize("hasRole('ADMIN','SOPORTE')")
+    @PreAuthorize("hasAnyRole('ADMIN','SOPORTE')")
     @PutMapping("/{idTicket}/estado")
     @Operation(summary = "Cambiar estado de un ticket", 
                description = "Permite a un usuario con rol ADMIN o SOPORTE cambiar el estado de un ticket.")

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,10 +23,11 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     public Ticket crearTicket(TicketCrear ticketCrear) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Ticket ticket = new Ticket();
         ticket.setAsunto(ticketCrear.getAsunto());
         ticket.setDescripcion(ticketCrear.getDescripcion());
-        ticket.setEmailUsuario("aaa@gmail.com");
+        ticket.setEmailUsuario(email);
         return ticketRepository.save(ticket);
     }
 
