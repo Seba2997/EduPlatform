@@ -44,6 +44,7 @@ public class ComentarioController {
             linkTo(methodOn(ComentarioController.class).listarPorCurso(cursoId)).withSelfRel());
     }
 
+
     @PreAuthorize("hasRole('ESTUDIANTE')")
     @PostMapping
     @Operation(summary = "Crea un nuevo comentario",
@@ -58,8 +59,8 @@ public class ComentarioController {
     @Operation(summary = "Modifica un comentario existente",
                 description = "Actualiza el contenido de un comentario.")
     public EntityModel<Comentario> editar(@PathVariable int id, @Valid @RequestBody ComentarioEditar comentarioEditar) {
-        comentarioEditar.setId(id);
-        Comentario actualizado = comentarioService.editarComentario(comentarioEditar);
+        
+        Comentario actualizado = comentarioService.editarComentario(comentarioEditar, id);
         return comentarioAssembler.toModel(actualizado);
     }
 

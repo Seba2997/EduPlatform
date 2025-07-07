@@ -108,10 +108,10 @@ public class CursoService {
         nuevoCurso.setCategoria(categoria);
 
         return cursoRepo.save(nuevoCurso);
-
+        
     } catch (Exception e) {
         e.printStackTrace();
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso: " + e.getMessage());
     }
     }
 

@@ -151,8 +151,8 @@ public class UserControllers {
         return ResponseEntity.ok("Perfil actualizado correctamente");
     }
 
-    @GetMapping("/internal/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
+    @GetMapping("/internal/{id}")
     @Operation(summary = "Obtiene un usuario interno por ID", description = "Devuelve los detalles de un usuario específico basado en su ID para uso interno.")
     public ResponseEntity<UserDTO> obtenerInterno(@PathVariable int id) {
         UserDTO user = userService.obtenerUnoDTO(id);

@@ -51,8 +51,8 @@ public class EvaluacionService {
     }
 
     
-    public Evaluacion modificarEvaluacion(EvaluacionEditar editar) {
-        Evaluacion evaluacion = evaluacionRepo.findById(editar.getId()).orElse(null);
+    public Evaluacion modificarEvaluacion(EvaluacionEditar editar, int idEvaluacion) {
+        Evaluacion evaluacion = evaluacionRepo.findById(idEvaluacion).orElse(null);
         if (evaluacion == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada");
         }

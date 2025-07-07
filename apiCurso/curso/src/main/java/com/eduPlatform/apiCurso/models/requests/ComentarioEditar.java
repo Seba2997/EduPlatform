@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ComentarioEditar {
     
-    private Integer id;
+
     private String detalle;
 }

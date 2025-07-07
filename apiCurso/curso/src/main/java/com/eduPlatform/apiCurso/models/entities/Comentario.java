@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -23,5 +25,6 @@ public class Comentario {
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
+    @JsonIgnore
     private Curso curso;
 }

@@ -43,8 +43,8 @@ public class CursoController {
             linkTo(methodOn(CursoController.class).traerTodos()).withSelfRel());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
-    @GetMapping("/obtenerPorId{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE', 'ESTUDIANTE')")
+    @GetMapping("/obtenerPorId/{id}")
     @Operation(summary = "Obtener curso por id", description = "Obtener un curso registrado en el sistema por id.")
     public EntityModel<Curso> traerPorId(@PathVariable int id) {
         Curso curso = cursoService.obtenerCursoPorId(id);

@@ -63,8 +63,8 @@ public class EvaluacionController {
                 description = "Actualiza los datos de una evaluación.")
     public EntityModel<Evaluacion> modificarEvaluacion(@PathVariable int id,
                                                         @Valid @RequestBody EvaluacionEditar editar) {
-        editar.setId(id);
-        Evaluacion evaluacion = evaluacionService.modificarEvaluacion(editar);
+        
+        Evaluacion evaluacion = evaluacionService.modificarEvaluacion(editar,id);
         return assembler.toModel(evaluacion);
     }
 
@@ -72,8 +72,8 @@ public class EvaluacionController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar una evaluación",
                 description = "Elimina una evaluación según su ID.")
-    public ResponseEntity<Void> eliminarEvaluacion(@PathVariable int id) {
+    public ResponseEntity<String> eliminarEvaluacion(@PathVariable int id) {
         evaluacionService.eliminarEvaluacion(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Evaluación eliminada correctamente");
     }
 }

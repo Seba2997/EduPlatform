@@ -48,8 +48,8 @@ public class ComentarioService {
         return comentarioRepo.save(comentario);
     }
 
-    public Comentario editarComentario(ComentarioEditar comentarioEditar) {
-        Comentario comentario = comentarioRepo.findById(comentarioEditar.getId()).orElse(null);
+    public Comentario editarComentario(ComentarioEditar comentarioEditar, int idComentario) {
+        Comentario comentario = comentarioRepo.findById(idComentario).orElse(null);
         if (comentario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentario no encontrado");
         }
