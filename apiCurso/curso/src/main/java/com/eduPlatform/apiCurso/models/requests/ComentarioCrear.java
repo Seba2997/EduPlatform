@@ -6,7 +6,6 @@ import lombok.Data;
 public class ComentarioCrear {
    
     private String detalle;
-    private String autor;
     private Integer cursoId;
 }
 

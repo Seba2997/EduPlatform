@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.ContenidoModelAssembler;
@@ -30,6 +31,7 @@ public class ContenidoController {
     @Autowired
     private ContenidoModelAssembler contenidoAssembler;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @GetMapping("/")
     @Operation(summary = "Obtiene todos los contenidos",
                 description = "Devuelve una lista de todos los contenidos registrados.")
@@ -43,6 +45,7 @@ public class ContenidoController {
             linkTo(methodOn(ContenidoController.class).traerTodos()).withSelfRel());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @GetMapping("/{id}")
     @Operation(summary = "Obtiene un contenido por ID",
                 description = "Devuelve un contenido específico según su ID.")
@@ -51,6 +54,7 @@ public class ContenidoController {
         return contenidoAssembler.toModel(contenido);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @PostMapping("/{idCurso}")
     @Operation(summary = "Crea un nuevo contenido",
                 description = "Crea un nuevo contenido asociado a un curso.")
@@ -59,6 +63,7 @@ public class ContenidoController {
         return contenidoAssembler.toModelSoloModificar(creado);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @PutMapping("/{id}")
     @Operation(summary = "Modifica un contenido existente",
                 description = "Permite modificar los datos de un contenido.")
@@ -68,6 +73,7 @@ public class ContenidoController {
         return contenidoAssembler.toModelSoloModificar(actualizado);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Elimina un contenido por ID",
                 description = "Elimina un contenido específico por su ID.")

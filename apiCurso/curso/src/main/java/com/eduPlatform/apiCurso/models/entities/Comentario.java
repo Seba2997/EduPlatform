@@ -18,7 +18,7 @@ public class Comentario {
 
     @Column(nullable = false, length = 500)
     private String detalle;
-    private String autor; 
+    private String emailAutor; 
     private LocalDateTime fechaCreacion;
 
     @ManyToOne

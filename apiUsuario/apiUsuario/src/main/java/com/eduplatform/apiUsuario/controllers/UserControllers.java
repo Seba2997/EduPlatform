@@ -148,8 +148,16 @@ public class UserControllers {
         User usuario = userService.obtenerPorEmail(email);
         body.setId(usuario.getId()); // establecemos el ID del usuario autenticado
         userService.modificar(body);
-    return ResponseEntity.ok("Perfil actualizado correctamente");
-}
+        return ResponseEntity.ok("Perfil actualizado correctamente");
+    }
+
+    @GetMapping("/internal/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
+    @Operation(summary = "Obtiene un usuario interno por ID", description = "Devuelve los detalles de un usuario específico basado en su ID para uso interno.")
+    public ResponseEntity<UserDTO> obtenerInterno(@PathVariable int id) {
+        UserDTO user = userService.obtenerUnoDTO(id);
+        return ResponseEntity.ok(user);
+    }
 
     
 }

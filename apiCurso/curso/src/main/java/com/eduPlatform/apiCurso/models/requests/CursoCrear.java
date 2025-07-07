@@ -12,4 +12,6 @@ public class CursoCrear {
 
     private String CategoriaNombre;
 
+    private String idProfesor;
+
 }

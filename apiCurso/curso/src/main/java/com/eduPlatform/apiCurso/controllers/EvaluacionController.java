@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.EvaluacionModelAssembler;
@@ -32,6 +33,7 @@ public class EvaluacionController {
     @Autowired
     private EvaluacionModelAssembler assembler;
 
+    @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
     @PostMapping("/curso/{idCurso}")
     @Operation(summary = "Registrar una nueva evaluación para un curso",
                 description = "Crea una evaluación asociada a un curso existente.")
@@ -41,6 +43,7 @@ public class EvaluacionController {
         return assembler.toModel(evaluacion);
     }
 
+    @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
     @GetMapping("/curso/{idCurso}")
     @Operation(summary = "Listar evaluaciones por curso",
                 description = "Obtiene todas las evaluaciones asignadas a un curso.")
@@ -54,6 +57,7 @@ public class EvaluacionController {
             linkTo(methodOn(EvaluacionController.class).listarPorCurso(idCurso)).withSelfRel());
     }
 
+    @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Modificar una evaluación existente",
                 description = "Actualiza los datos de una evaluación.")
@@ -64,6 +68,7 @@ public class EvaluacionController {
         return assembler.toModel(evaluacion);
     }
 
+    @PreAuthorize("hasAnyRole('PROFESOR', 'ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar una evaluación",
                 description = "Elimina una evaluación según su ID.")

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.CategoriaModelAssembler;
@@ -29,7 +30,8 @@ public class CategoriaController {
     @Autowired
     private CategoriaModelAssembler assembler;
 
-    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @GetMapping("/obtenerTodas")
     @Operation(summary = "Lista todas las categorías",
                description = "Devuelve una lista de todas las categorías registradas.")
     public CollectionModel<EntityModel<Categoria>> obtenerTodas() {
@@ -42,7 +44,8 @@ public class CategoriaController {
             linkTo(methodOn(CategoriaController.class).obtenerTodas()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @GetMapping("/obtenerPorId{id}")
     @Operation(summary = "Obtiene una categoría por ID",
                description = "Devuelve los detalles de una categoría específica.")
     public EntityModel<Categoria> obtenerPorId(@PathVariable int id) {
@@ -50,7 +53,8 @@ public class CategoriaController {
         return assembler.toModel(categoria);
     }
 
-    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PostMapping("/crear")
     @Operation(summary = "Crea una nueva categoría",
                description = "Permite registrar una nueva categoría.")
     public EntityModel<Categoria> crear(@Valid @RequestBody CategoriaCrear categoriaCrear) {
@@ -58,7 +62,8 @@ public class CategoriaController {
         return assembler.toModel(creada);
     }
 
-    @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PutMapping("/modificar{id}")
     @Operation(summary = "Modifica una categoría existente",
                description = "Permite actualizar los datos de una categoría.")
     public EntityModel<Categoria> modificar(@Valid @RequestBody CategoriaEditar categoriaEditar) {

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.ComentarioModelAssembler;
@@ -29,6 +30,7 @@ public class ComentarioController {
     @Autowired
     private ComentarioModelAssembler comentarioAssembler;
 
+    
     @GetMapping("/curso/{cursoId}")
     @Operation(summary = "Lista comentarios de un curso",
                 description = "Devuelve todos los comentarios asociados a un curso específico.")
@@ -42,6 +44,7 @@ public class ComentarioController {
             linkTo(methodOn(ComentarioController.class).listarPorCurso(cursoId)).withSelfRel());
     }
 
+    @PreAuthorize("hasRole('ESTUDIANTE')")
     @PostMapping
     @Operation(summary = "Crea un nuevo comentario",
                 description = "Crea un comentario para un curso determinado.")
@@ -50,7 +53,8 @@ public class ComentarioController {
         return comentarioAssembler.toModel(creado);
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @PutMapping("/editar/{id}")
     @Operation(summary = "Modifica un comentario existente",
                 description = "Actualiza el contenido de un comentario.")
     public EntityModel<Comentario> editar(@PathVariable int id, @Valid @RequestBody ComentarioEditar comentarioEditar) {
@@ -59,5 +63,4 @@ public class ComentarioController {
         return comentarioAssembler.toModel(actualizado);
     }
 
-  
 }

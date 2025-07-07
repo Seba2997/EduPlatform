@@ -9,6 +9,8 @@ import com.eduPlatform.apiCurso.repositories.CursoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,9 +36,12 @@ public class ComentarioService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso no encontrado");
         }
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String emailAutor = auth.getName();
+
         Comentario comentario = new Comentario();
         comentario.setDetalle(comentarioCrear.getDetalle());
-        comentario.setAutor(comentarioCrear.getAutor());
+        comentario.setEmailAutor(emailAutor);
         comentario.setFechaCreacion(LocalDateTime.now());
         comentario.setCurso(curso);
 
@@ -49,6 +54,13 @@ public class ComentarioService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentario no encontrado");
         }
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String emailAutor = auth.getName();
+
+        if (!comentario.getEmailAutor().equals(emailAutor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para editar este comentario");
+        }
+    
         comentario.setDetalle(comentarioEditar.getDetalle());
         return comentarioRepo.save(comentario);
     }
