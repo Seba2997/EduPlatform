@@ -1,10 +1,10 @@
-package com.eduplatform.apiInscripcion.security;
-
+package com.eduPlatform.apiCurso.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+public class JwtAuthenticationFilter extends OncePerRequestFilter{
+    
     private final JwtUtil jwtUtil;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
@@ -29,8 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
-            throws ServletException, IOException {
-
+                                    throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -40,8 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 List<String> roles = jwtUtil.extraerRoles(token);
 
                 var authorities = roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        .collect(Collectors.toList());
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                    .collect(Collectors.toList());
 
                 var auth = new UsernamePasswordAuthenticationToken(email, token, authorities);
                 SecurityContextHolder.getContext().setAuthentication(auth);

@@ -2,8 +2,10 @@ package com.eduPlatform.apiCurso.services;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,8 +15,7 @@ import com.eduPlatform.apiCurso.models.entities.Curso;
 import com.eduPlatform.apiCurso.models.entities.Profesor;
 import com.eduPlatform.apiCurso.models.requests.CursoCrear;
 import com.eduPlatform.apiCurso.models.requests.CursoEditar;
-import com.eduPlatform.apiCurso.models.user.Rol;
-import com.eduPlatform.apiCurso.models.user.Usuario;
+import com.eduPlatform.apiCurso.models.user.UsuarioDTO;
 import com.eduPlatform.apiCurso.repositories.CategoriaRepository;
 import com.eduPlatform.apiCurso.repositories.CursoRepository;
 import com.eduPlatform.apiCurso.repositories.ProfesorRepository;
@@ -56,54 +57,62 @@ public class CursoService {
     }
     
 
-    public Curso registrar(CursoCrear cursoCrear, int idUsuario) {
-        try {
+    public Curso registrar(CursoCrear cursoCrear) {
+    try {
 
-            Usuario usuario = webClient.get()
-                                        .uri("http://localhost:8082/user/" + idUsuario)
-                                        .retrieve()
-                                        .bodyToMono(Usuario.class)
-                                        .block();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String jwt = (String) auth.getCredentials();
 
-            if (usuario == null || usuario.getRol() != Rol.PROFESOR) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Solo los profesores pueden crear cursos");
-            }
+        // 1. Consultar el usuario por ID (el profesor asignado)
+        UsuarioDTO profesorUsuario = webClient.get()
+            .uri("http://localhost:8082/user/internal/" + cursoCrear.getIdProfesor())
+            .header("Authorization", "Bearer " + jwt)
+            .retrieve()
+            .bodyToMono(UsuarioDTO.class)
+            .block();
 
-            Profesor profesor = profesorRepo.findById(idUsuario).orElse(null);
-            if (profesor == null) {
-                Profesor nuevo = new Profesor();
-                nuevo.setId(usuario.getId());
-                nuevo.setNombre(usuario.getName());
-                nuevo.setEmail(usuario.getEmail());
-                profesor = profesorRepo.save(nuevo);
-            }
-
-            //CATEGORÍA: buscar por nombre y reemplazar
-            String nuevoNombreCategoria = cursoCrear.getCategoriaNombre();
-            if (nuevoNombreCategoria == null || nuevoNombreCategoria.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de la categoría es obligatorio");
-            }
-            Categoria categoria = categoriaRepo.findByNombreCategoriaIgnoreCase(nuevoNombreCategoria);
-            if (categoria == null) {
-            categoria = new Categoria();// No existe → crear nueva
-            }           
-            categoria.setNombreCategoria(nuevoNombreCategoria);// Existe o es nueva → actualizamos el nombre
-            categoria = categoriaRepo.save(categoria);
-
-            Curso nuevoCurso = new Curso();
-            nuevoCurso.setEstado(true); 
-            nuevoCurso.setNombreCurso(cursoCrear.getNombreCurso());
-            nuevoCurso.setDescripcion(cursoCrear.getDescripcion());
-            nuevoCurso.setEstado(cursoCrear.getEstado());
-            nuevoCurso.setPrecio(cursoCrear.getPrecio());
-            nuevoCurso.setProfesor(profesor);
-            nuevoCurso.setCategoria(categoria);
-            return cursoRepo.save(nuevoCurso);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso");
+        if (profesorUsuario == null || !profesorUsuario.tieneRol("PROFESOR")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario asignado no es un profesor válido");
         }
+
+        // 2. Buscar o crear al profesor localmente
+        Profesor profesor = profesorRepo.findById(profesorUsuario.getId()).orElse(null);
+        if (profesor == null) {
+            profesor = new Profesor();
+            profesor.setId(profesorUsuario.getId());
+            profesor.setNombre(profesorUsuario.getName());
+            profesor.setEmail(profesorUsuario.getEmail());
+            profesor = profesorRepo.save(profesor);
+        }
+
+        // 3. Procesar la categoría
+        String nuevoNombreCategoria = cursoCrear.getCategoriaNombre();
+        if (nuevoNombreCategoria == null || nuevoNombreCategoria.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de la categoría es obligatorio");
+        }
+
+        Categoria categoria = categoriaRepo.findByNombreCategoriaIgnoreCase(nuevoNombreCategoria);
+        if (categoria == null) {
+            categoria = new Categoria();
+        }
+        categoria.setNombreCategoria(nuevoNombreCategoria);
+        categoria = categoriaRepo.save(categoria);
+
+        // 4. Crear y guardar el curso
+        Curso nuevoCurso = new Curso();
+        nuevoCurso.setNombreCurso(cursoCrear.getNombreCurso());
+        nuevoCurso.setDescripcion(cursoCrear.getDescripcion());
+        nuevoCurso.setEstado(cursoCrear.getEstado());
+        nuevoCurso.setPrecio(cursoCrear.getPrecio());
+        nuevoCurso.setProfesor(profesor);
+        nuevoCurso.setCategoria(categoria);
+
+        return cursoRepo.save(nuevoCurso);
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar curso: " + e.getMessage());
+    }
     }
 
 

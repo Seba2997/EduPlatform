@@ -1,4 +1,4 @@
-package com.eduplatform.apiInscripcion.config;
+package com.eduPlatform.apiCurso.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.eduplatform.apiInscripcion.security.JwtAuthenticationFilter;
+import com.eduPlatform.apiCurso.security.JwtAuthenticationFilter;
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html",
-                    "/inscripciones/**"
+                     "/comentarios/curso/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -40,4 +42,3 @@ public class SecurityConfig {
             .build();
     }
 }
-

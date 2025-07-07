@@ -74,7 +74,7 @@ public class InscripcionService {
     private Curso obtenerCurso(int idCurso) {
         Curso curso = webClientConToken()
             .get()
-            .uri("http://localhost:8081/cursos/{id}", idCurso)
+            .uri("http://localhost:8081/cursos/obtenerPorId/{id}", idCurso)
             .retrieve()
             .bodyToMono(Curso.class)
             .block();
