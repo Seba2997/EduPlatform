@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Boleta {
-     private int id;
+    private int id;
     private int numeroBoleta;
     private int precio;
     private String fechaCompra;

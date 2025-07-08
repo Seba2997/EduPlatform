@@ -20,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+import com.eduplatform.apiReporte.models.external.Boleta;
 import com.eduplatform.apiReporte.models.external.Inscripcion;
 
 @Service
@@ -39,7 +40,7 @@ public class ReporteService {
     }
 
 
-
+    //Funcion 1: crearReporteDesdeApi
     public Reporte crearReporteDesdeApi(ReporteCrear dto) {
         String contenido = dto.getContenido();
 
@@ -60,51 +61,8 @@ public class ReporteService {
         return reporteRepo.save(reporte);
     }
 
-    public Reporte generarReporteInscripciones() {
-        List<Inscripcion> inscripciones = webClientConToken()
-                .get()
-                .uri("http://localhost:8083/inscripciones/") // Ajusta el puerto si es distinto
-                .retrieve()
-                .bodyToFlux(Inscripcion.class)
-                .collectList()
-                .block();
-
-        if (inscripciones == null || inscripciones.isEmpty()) {
-            throw new RuntimeException("No se encontraron inscripciones para el reporte.");
-        }
-
-        int totalInscripciones = inscripciones.size();
-        int totalRecaudado = inscripciones.stream()
-                .mapToInt(i -> i.getCurso().getPrecio())
-                .sum();
-
-        StringBuilder contenido = new StringBuilder();
-        contenido.append("REPORTE DE INSCRIPCIONES\n\n");
-        contenido.append("Fecha de generación: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
-        contenido.append("Total de inscripciones: ").append(totalInscripciones).append("\n");
-        contenido.append("Total recaudado: $").append(totalRecaudado).append("\n\n");
-        contenido.append("Detalle de inscripciones:\n");
-
-        for (Inscripcion insc : inscripciones) {
-            contenido.append("- Estudiante: ").append(insc.getNombreEstudiante())
-                    .append(" | Email: ").append(insc.getEmailEstudiante())
-                    .append(" | Curso: ").append(insc.getNombreCurso())
-                    .append(" | Fecha de Inscripcion: ").append(insc.getFechaInscripcion())
-                    .append("\n");
-        }
-
-        String nombreArchivo = generarPdfDesdeTexto("Reporte Inscripciones", contenido.toString());
-
-        Reporte reporte = new Reporte();
-        reporte.setTitulo("Reporte de Inscripciones");
-        reporte.setFechaGeneracion(LocalDateTime.now());
-        reporte.setContenidoTexto(contenido.toString());
-        reporte.setArchivoPdf(nombreArchivo);
-
-        return reporteRepo.save(reporte);
-    }
-
-    private String generarPdfDesdeTexto(String titulo, String contenido) {
+    //Funcion 2: generarPdfDesdeTexto
+        private String generarPdfDesdeTexto(String titulo, String contenido) {
         String carpeta = "reportes";
         File directorio = new File(carpeta);
         if (!directorio.exists()) {
@@ -128,4 +86,90 @@ public class ReporteService {
         }
         return nombreArchivo;
     }
+
+    //Funcion 3: generarReporteInscripciones
+    public Reporte generarReporteInscripciones() {
+    // Traer inscripciones
+    List<Inscripcion> inscripciones = webClientConToken()
+            .get()
+            .uri("http://localhost:8083/inscripciones/")
+            .retrieve()
+            .bodyToFlux(Inscripcion.class)
+            .collectList()
+            .block();
+
+    // Validación
+    if (inscripciones == null || inscripciones.isEmpty()) {
+        throw new RuntimeException("No se encontraron inscripciones para el reporte.");
+    }
+
+    int totalInscripciones = inscripciones.size();
+
+    // Traer boletas
+    List<Boleta> boletas = webClientConToken()
+            .get()
+            .uri("http://localhost:8083/boletas/todas")
+            .retrieve()
+            .bodyToFlux(Boleta.class)
+            .collectList()
+            .block();
+
+    int totalRecaudado = 0;
+    if (boletas != null && !boletas.isEmpty()) {
+        totalRecaudado = boletas.stream().mapToInt(Boleta::getPrecio).sum();
+    }
+
+    // Armar contenido
+    StringBuilder contenidoReporte = new StringBuilder();
+    contenidoReporte.append("REPORTE DE INSCRIPCIONES\n\n");
+    contenidoReporte.append("Fecha de generación: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
+    contenidoReporte.append("Total de inscripciones: ").append(totalInscripciones).append("\n");
+    contenidoReporte.append("Total recaudado (según boletas): $").append(totalRecaudado).append("\n\n");
+    contenidoReporte.append("Detalle de inscripciones:\n");
+
+    for (Inscripcion inscripcion : inscripciones) {
+    // Obtener la boleta asociada a la inscripción actual
+    Boleta boleta = null;
+    try {
+        boleta = webClientConToken()
+                .get()
+                .uri("http://localhost:8083/boletas/inscripcion/" + inscripcion.getIdInscripcion()) // Usa el ID de la inscripción
+                .retrieve()
+                .bodyToMono(Boleta.class)
+                .block();
+    } catch (Exception e) {
+        System.err.println("No se pudo obtener la boleta para la inscripción ID: " + inscripcion.getIdInscripcion());
+    }
+
+    contenidoReporte.append("- Estudiante: ").append(inscripcion.getNombreEstudiante())
+            .append(" | Email: ").append(inscripcion.getEmailEstudiante())
+            .append(" | Curso: ").append(inscripcion.getNombreCurso())
+            .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion());
+
+    // Agrega datos de la boleta si está disponible
+    if (boleta != null) {
+        contenidoReporte.append(" | N° Boleta: ").append(boleta.getNumeroBoleta())
+                .append(" | Precio: $").append(boleta.getPrecio())
+                .append(" | Fecha Compra: ").append(boleta.getFechaCompra());
+    } else {
+        contenidoReporte.append(" | Boleta: No disponible");
+    }
+
+    contenidoReporte.append("\n");
 }
+
+    // Generar PDF
+    String nombreArchivo = generarPdfDesdeTexto("Reporte Inscripciones", contenidoReporte.toString());
+
+    // Guardar en BD
+    Reporte reporte = new Reporte();
+    reporte.setTitulo("Reporte de Inscripciones");
+    reporte.setFechaGeneracion(LocalDateTime.now());
+    reporte.setContenidoTexto(contenidoReporte.toString());
+    reporte.setArchivoPdf(nombreArchivo);
+
+    return reporteRepo.save(reporte);
+}
+
+}
+
