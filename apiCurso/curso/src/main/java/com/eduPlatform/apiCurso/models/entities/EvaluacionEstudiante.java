@@ -24,7 +24,10 @@ public class EvaluacionEstudiante {
 
     private String respuesta;
 
-    private Integer puntajeObtenido;
+    private int puntajeObtenido;
+
+    private String nombreEstudiante;
+    private String emailEstudiante;
 
     @ManyToOne
     @JoinColumn(name = "evaluacion_id", nullable = false)

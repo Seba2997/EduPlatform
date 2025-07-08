@@ -17,14 +17,8 @@ public class EvaluacionEstudianteModelAssembler implements RepresentationModelAs
     public @NonNull EntityModel<EvaluacionEstudiante> toModel(@NonNull EvaluacionEstudiante evaluacionEstudiante) {
         return EntityModel.of(
             evaluacionEstudiante,
-            linkTo(methodOn(EvaluacionEstudianteController.class)
-            .editarEvaluacionEstudiante(evaluacionEstudiante.getEvaluacionEstudianteid(), null))
-            .withRel("editar-respuesta"),
             linkTo(methodOn(EvaluacionEstudianteController.class).responder(null))
-            .withRel("responder-nueva"),
-            linkTo(methodOn(EvaluacionEstudianteController.class)
-                .editarEvaluacionEstudiante(evaluacionEstudiante.getEvaluacionEstudianteid(), null))
-                .withSelfRel()
+            .withRel("responder-nueva")
         );
     }
 }
