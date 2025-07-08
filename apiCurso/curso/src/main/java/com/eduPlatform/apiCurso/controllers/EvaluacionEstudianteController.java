@@ -45,12 +45,14 @@ public class EvaluacionEstudianteController {
 
 
     @PreAuthorize("hasRole('ESTUDIANTE')")
-@GetMapping("/evaluaciones/{id}")
-@Operation(
+    @GetMapping("/evaluaciones/{id}")
+    @Operation(
     summary = "Ver una evaluación asignada",
-    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor para que la pueda responder, usando su ID."
-)
-public Evaluacion verEvaluacion(@PathVariable int id) {
-    return service.mostrarEvaluacionPorId(id);
-}
+    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor para que la pueda responder, usando su ID.")
+    public Evaluacion verEvaluacion(@PathVariable int id) {
+        return service.mostrarEvaluacionPorId(id);
+    }
+
+
+    
 }
