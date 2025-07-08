@@ -90,6 +90,6 @@ public class InscripcionController {
         return inscripciones;
     }
 
-    
-    
+    // Funcion 3: generarReporteInscripciones
+
 }
