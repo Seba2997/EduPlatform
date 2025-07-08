@@ -63,7 +63,7 @@ public class ReporteService {
     public Reporte generarReporteInscripciones() {
         List<Inscripcion> inscripciones = webClientConToken()
                 .get()
-                .uri("http://localhost:8083/inscripciones") // Ajusta el puerto si es distinto
+                .uri("http://localhost:8083/inscripciones/") // Ajusta el puerto si es distinto
                 .retrieve()
                 .bodyToFlux(Inscripcion.class)
                 .collectList()

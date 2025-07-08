@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Curso {
-      private int id;
+    private int id;
     private String nombreCurso;
     private int precio;
     private boolean estado;

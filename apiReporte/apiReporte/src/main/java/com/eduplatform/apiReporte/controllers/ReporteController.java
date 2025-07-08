@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class ReporteController {
     @Autowired
     private ReporteModelAssembler assembler;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
     @PostMapping
     @Operation(summary = "Crear un nuevo reporte", description = "Genera un reporte a partir de contenido JSON")
     public EntityModel<Reporte> crearReporte(@RequestBody ReporteCrear dto) {
@@ -30,6 +32,7 @@ public class ReporteController {
         return assembler.toModel(nuevo);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR', 'SOPORTE')")
     @GetMapping("/inscripciones")
     @Operation(summary = "Generar reporte de inscripciones", description = "Obtiene datos del microservicio de inscripciones y genera un PDF")
     public EntityModel<Reporte> generarReporteInscripciones() {
