@@ -10,10 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Inscripcion {
-    private int idInscripcion;
+    private int id;
+    private int idEstudiante;
     private String nombreEstudiante;
     private String emailEstudiante;
+    private int idCurso;
     private String nombreCurso;
     private LocalDate fechaInscripcion;
-    
 }
+
+
+
+    
+    

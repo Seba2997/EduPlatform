@@ -140,19 +140,23 @@ contenidoReporte.append("Fecha de generación: ")
 
 // Recorrer inscripciones y vincular con su boleta
 for (Inscripcion inscripcion : inscripciones) {
-    contenidoReporte.append("INSCRIPCIÓN:\n");
+    contenidoReporte.append("INSCRIPCIÓN " + inscripcion.getId() + ": " + "\n");
     contenidoReporte.append("- Estudiante: ").append(inscripcion.getNombreEstudiante())
             .append(" | Email: ").append(inscripcion.getEmailEstudiante())
             .append(" | Curso: ").append(inscripcion.getNombreCurso())
             .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion())
             .append("\n");
 
-    for (Boleta boleta : boletas) {
-        if (boleta.getInscripcionId() == inscripcion.getIdInscripcion()) {
-            contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
-                    .append(" | Precio: $").append(boleta.getPrecio())
-                    .append(" | Fecha Compra: ").append(boleta.getFechaCompra())
-                    .append("\n");
+    if (boletas != null) {
+        for (Boleta boleta : boletas) {
+            System.out.println("DEBUG => Inscripción ID: " + inscripcion.getId() +
+                   " vs Boleta.InscripciónID: " + boleta.getInscripcionId());
+            if (boleta.getInscripcionId() == inscripcion.getId()) {
+                contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
+                        .append(" | Precio: $").append(boleta.getPrecio())
+                        .append(" | Fecha Compra: ").append(boleta.getFechaCompra())
+                        .append("\n");
+            }
         }
     }
 

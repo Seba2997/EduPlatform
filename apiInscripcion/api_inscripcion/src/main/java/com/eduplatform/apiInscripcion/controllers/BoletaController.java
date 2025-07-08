@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eduplatform.apiInscripcion.models.entities.Boleta;
+import com.eduplatform.apiInscripcion.models.responses.BoletaDTO;
 import com.eduplatform.apiInscripcion.services.BoletaService;
 
 @RestController
@@ -27,11 +28,18 @@ public class BoletaController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/reporte")
-    public List<Boleta> obtenerTodasLasBoletas() {
-        List<Boleta> boletas = boletaService.obtenerTodasBoletas();
+    public List<BoletaDTO> obtenerTodasLasBoletas() {
+    List<Boleta> boletas = boletaService.obtenerTodasBoletas();
+
         if (boletas == null || boletas.isEmpty()) {
             throw new RuntimeException("No se encontraron boletas para el reporte.");
         }
-        return boletas;
-    }
+
+        // Convertir las entidades a DTOs para exponer inscripcionId
+        return boletas.stream()
+            .map(BoletaDTO::fromEntity)
+            .toList();
+    }   
+
+    
 }
