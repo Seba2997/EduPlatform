@@ -78,7 +78,7 @@ public class ReporteService {
             Document document = new Document(pdfDoc);
 
             document.add(new Paragraph("Edutech: " + titulo).setBold());
-            document.add(new Paragraph("\nReporte de Inscripciones:"));
+            document.add(new Paragraph("\nReporte de inscripciones y boletas:\n"));
             document.add(new Paragraph(contenido));
 
             document.close();
@@ -124,10 +124,9 @@ public class ReporteService {
 
     // Armar contenido
     StringBuilder contenidoReporte = new StringBuilder();
-    contenidoReporte.append("REPORTE DE INSCRIPCIONES\n\n");
     contenidoReporte.append("Fecha de generación: ").append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
     contenidoReporte.append("Total de inscripciones: ").append(totalInscripciones).append("\n");
-    contenidoReporte.append("Total recaudado (según boletas): $").append(totalRecaudado).append("\n\n");
+    contenidoReporte.append("Total recaudado: $").append(totalRecaudado).append("\n\n");
     contenidoReporte.append("Detalle de inscripciones:\n");
 
 contenidoReporte.append("REPORTE DE INSCRIPCIONES Y BOLETAS\n\n");
@@ -140,7 +139,6 @@ contenidoReporte.append("Fecha de generación: ")
 
 // Recorrer inscripciones y vincular con su boleta
 for (Inscripcion inscripcion : inscripciones) {
-    contenidoReporte.append("INSCRIPCIÓN " + inscripcion.getId() + ": " + "\n");
         contenidoReporte.append("INSCRIPCIÓN ").append(inscripcion.getId()).append(":\n")
         .append("Estudiante: ").append(inscripcion.getNombreEstudiante()).append("\n")
         .append("Email: ").append(inscripcion.getEmailEstudiante()).append("\n")
@@ -149,8 +147,6 @@ for (Inscripcion inscripcion : inscripciones) {
 
     if (boletas != null) {
         for (Boleta boleta : boletas) {
-            System.out.println("DEBUG => Inscripción ID: " + inscripcion.getId() +
-                    " vs Boleta.InscripciónID: " + boleta.getInscripcionId());
             if (boleta.getInscripcionId() == inscripcion.getId()) {
                     contenidoReporte.append("N° Boleta: ").append(boleta.getNumeroBoleta()).append("\n")
                     .append("Precio: $").append(boleta.getPrecio()).append("\n")
@@ -164,7 +160,7 @@ for (Inscripcion inscripcion : inscripciones) {
 }
 
     // Generar PDF
-    String nombreArchivo = generarPdfDesdeTexto("Reporte Inscripciones", contenidoReporte.toString());
+    String nombreArchivo = generarPdfDesdeTexto("Reportes", contenidoReporte.toString());
 
     // Guardar en BD
     Reporte reporte = new Reporte();
