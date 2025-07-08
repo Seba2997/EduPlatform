@@ -25,10 +25,10 @@ import org.springframework.http.HttpHeaders;
 public class EvaluacionEstudianteService {
 
     @Autowired
-    private EvaluacionEstudianteRepository evaluacionEstudianteRepository;
+    private EvaluacionEstudianteRepository evaluacionEstudianteRepo;
 
     @Autowired
-    private EvaluacionRepository evaluacionRepository;
+    private EvaluacionRepository evaluacionRepo;
 
      @Autowired
     private EvaluacionEstudianteRespuestaRepository respuestaRepo;
@@ -55,7 +55,7 @@ public class EvaluacionEstudianteService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes permiso para responder evaluaciones");
         }
 
-         Evaluacion evaluacion = evaluacionRepository.findById(crear.getEvaluacionId())
+         Evaluacion evaluacion = evaluacionRepo.findById(crear.getEvaluacionId())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada"));
 
         EvaluacionEstudiante respuesta = new EvaluacionEstudiante();
@@ -64,7 +64,7 @@ public class EvaluacionEstudianteService {
         respuesta.setEmailEstudiante(user.getEmail());
         respuesta.setEvaluacion(evaluacion);
 
-    return evaluacionEstudianteRepository.save(respuesta);
+    return evaluacionEstudianteRepo.save(respuesta);
 
     }
 
@@ -74,5 +74,10 @@ public class EvaluacionEstudianteService {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Respuesta no encontrada"));
 }
 
+
+public Evaluacion obtenerEvaluacionPorId(int idEvaluacion) {
+    return evaluacionRepo.findById(idEvaluacion)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada"));
+}
 
 }

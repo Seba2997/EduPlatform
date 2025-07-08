@@ -1,10 +1,12 @@
 package com.eduPlatform.apiCurso.controllers;
 
 import com.eduPlatform.apiCurso.assemblers.EvaluacionEstudianteModelAssembler;
+import com.eduPlatform.apiCurso.models.entities.Evaluacion;
 import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEstudianteCrear;
 import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;
 import com.eduPlatform.apiCurso.services.EvaluacionEstudianteService;
+import com.eduPlatform.apiCurso.services.EvaluacionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +29,7 @@ public class EvaluacionEstudianteController {
     private EvaluacionEstudianteModelAssembler assembler;
 
     @PreAuthorize("hasRole('ESTUDIANTE')")
-    @PostMapping("/responder")
+    @PostMapping("/responder/{id}")
     @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación.")
     public EntityModel<EvaluacionEstudiante> responder(@Valid @RequestBody EvaluacionEstudianteCrear crear) {
         EvaluacionEstudiante respuesta = service.responder(crear);
@@ -40,4 +42,15 @@ public class EvaluacionEstudianteController {
     public EvaluacionEstudianteRespuesta obtenerRespuesta(@PathVariable int id) {
         return service.obtenerRespuestaPorId(id);
     }
+
+
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+@GetMapping("/evaluaciones/{id}")
+@Operation(
+    summary = "Ver una evaluación asignada",
+    description = "Permite al estudiante ver los datos de una evaluación creada por el profesor, usando su ID."
+)
+public Evaluacion verEvaluacion(@PathVariable int id) {
+    return service.obtenerEvaluacionPorId(id);
+}
 }
