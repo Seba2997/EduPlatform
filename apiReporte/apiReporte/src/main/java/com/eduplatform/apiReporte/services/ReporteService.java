@@ -17,9 +17,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 import java.util.UUID;
 
 import com.eduplatform.apiReporte.models.external.Boleta;
@@ -137,13 +137,6 @@ contenidoReporte.append("Fecha de generación: ")
 
 
 
-// Crear un mapa para acceso rápido a las boletas por ID de inscripción
-Map<Long, Boleta> boletasPorInscripcion = new HashMap<>();
-if (boletas != null) {
-    for (Boleta boleta : boletas) {
-        boletasPorInscripcion.put(Long.valueOf(boleta.getId()), boleta); // conversión explícita
-    }
-}
 
 // Recorrer inscripciones y vincular con su boleta
 for (Inscripcion inscripcion : inscripciones) {
@@ -154,16 +147,16 @@ for (Inscripcion inscripcion : inscripciones) {
             .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion())
             .append("\n");
 
-    Boleta boleta = boletasPorInscripcion.get(Long.valueOf(inscripcion.getIdInscripcion())); // conversión explícita
-    if (boleta != null) {
-        contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
-                .append(" | Precio: $").append(boleta.getPrecio())
-                .append(" | Fecha Compra: ").append(boleta.getFechaCompra());
-    } else {
-        contenidoReporte.append("- Boleta: No disponible");
+    for (Boleta boleta : boletas) {
+        if (boleta.getId() == inscripcion.getIdInscripcion()) {
+            contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
+                    .append(" | Precio: $").append(boleta.getPrecio())
+                    .append(" | Fecha Compra: ").append(boleta.getFechaCompra())
+                    .append("\n");
+        }
     }
 
-    contenidoReporte.append("\n\n");
+    contenidoReporte.append("\n");
 }
 
     // Generar PDF
@@ -180,4 +173,5 @@ for (Inscripcion inscripcion : inscripciones) {
 }
 
 }
+
 
