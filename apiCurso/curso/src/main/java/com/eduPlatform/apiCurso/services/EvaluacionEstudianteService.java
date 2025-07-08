@@ -13,9 +13,10 @@ import org.springframework.web.server.ResponseStatusException;
 import com.eduPlatform.apiCurso.models.entities.Evaluacion;
 import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEstudianteCrear;
-
+import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;
 import com.eduPlatform.apiCurso.models.user.UsuarioDTO;
 import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRepository;
+import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRespuestaRepository;
 import com.eduPlatform.apiCurso.repositories.EvaluacionRepository;
 
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,10 @@ public class EvaluacionEstudianteService {
 
     @Autowired
     private EvaluacionRepository evaluacionRepository;
+
+     @Autowired
+    private EvaluacionEstudianteRespuestaRepository respuestaRepo;
+
 
 
     // El estudiante responde (crea una respuesta)
@@ -62,5 +67,12 @@ public class EvaluacionEstudianteService {
     return evaluacionEstudianteRepository.save(respuesta);
 
     }
+
+
+    public EvaluacionEstudianteRespuesta obtenerRespuestaPorId(int idRespuesta) {
+    return respuestaRepo.findById(idRespuesta)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Respuesta no encontrada"));
+}
+
 
 }

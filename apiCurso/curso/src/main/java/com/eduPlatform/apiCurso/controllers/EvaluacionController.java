@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.EvaluacionModelAssembler;
 import com.eduPlatform.apiCurso.models.entities.Evaluacion;
+import com.eduPlatform.apiCurso.models.requests.CalificacionRequest;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionCrear;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEditar;
+import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;
 import com.eduPlatform.apiCurso.services.EvaluacionService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,4 +78,18 @@ public class EvaluacionController {
         evaluacionService.eliminarEvaluacion(id);
         return ResponseEntity.ok("Evaluación eliminada correctamente");
     }
+
+
+//Calificar evaluacion de estudiante
+
+    @PreAuthorize("hasRole('PROFESOR','ADMIN')")
+    @PostMapping("/calificar")
+    @Operation(
+        summary = "Registrar puntaje de evaluación del estudiante",
+        description = "El profesor califica al estudiante, el sistema calcula la nota y guarda la información."
+    )
+    public EvaluacionEstudianteRespuesta calificarEvaluacion(@RequestBody CalificacionRequest request) {
+        return evaluacionService.calificarRespuesta(request);
+    }
+
 }
