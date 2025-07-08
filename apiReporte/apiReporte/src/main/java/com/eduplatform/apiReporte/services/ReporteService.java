@@ -137,7 +137,6 @@ contenidoReporte.append("Fecha de generación: ")
 
 
 
-
 // Crear un mapa para acceso rápido a las boletas por ID de inscripción
 Map<Long, Boleta> boletasPorInscripcion = new HashMap<>();
 if (boletas != null) {
