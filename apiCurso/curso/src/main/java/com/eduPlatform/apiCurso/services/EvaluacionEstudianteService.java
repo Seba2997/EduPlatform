@@ -69,15 +69,17 @@ public class EvaluacionEstudianteService {
     }
 
 
-    public EvaluacionEstudianteRespuesta obtenerRespuestaPorId(int idRespuesta) {
+    public EvaluacionEstudianteRespuesta obtenerCalificacionPorId(int idRespuesta) {
     return respuestaRepo.findById(idRespuesta)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Respuesta no encontrada"));
 }
 
 
-public Evaluacion obtenerEvaluacionPorId(int idEvaluacion) {
+public Evaluacion mostrarEvaluacionPorId(int idEvaluacion) {
     return evaluacionRepo.findById(idEvaluacion)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada"));
 }
+
+
 
 }

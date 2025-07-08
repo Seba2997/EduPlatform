@@ -1,5 +1,10 @@
 package com.eduPlatform.apiCurso.assemblers;
 
+
+
+
+
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import com.eduPlatform.apiCurso.controllers.EvaluacionEstudianteController;
@@ -14,11 +19,12 @@ import org.springframework.stereotype.Component;
 public class EvaluacionEstudianteModelAssembler implements RepresentationModelAssembler<EvaluacionEstudiante, EntityModel<EvaluacionEstudiante>> {
 
     @Override
-    public @NonNull EntityModel<EvaluacionEstudiante> toModel(@NonNull EvaluacionEstudiante evaluacionEstudiante) {
-        return EntityModel.of(
-            evaluacionEstudiante,
-            linkTo(methodOn(EvaluacionEstudianteController.class).responder(null))
-            .withRel("responder-nueva")
+    @NonNull
+    public EntityModel<EvaluacionEstudiante> toModel(@NonNull EvaluacionEstudiante evaluacionEstudiante) {
+        return EntityModel.of(evaluacionEstudiante,
+            linkTo(methodOn(EvaluacionEstudianteController.class).responder(null)).withRel("responder"),
+            linkTo(methodOn(EvaluacionEstudianteController.class).obtenerCalificacion(evaluacionEstudiante.getEvaluacionEstudianteid())).withSelfRel(),
+            linkTo(methodOn(EvaluacionEstudianteController.class).verEvaluacion(evaluacionEstudiante.getEvaluacion().getId())).withRel("evaluacion")
         );
     }
 }

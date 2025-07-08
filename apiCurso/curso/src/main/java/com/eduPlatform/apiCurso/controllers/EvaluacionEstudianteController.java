@@ -30,7 +30,7 @@ public class EvaluacionEstudianteController {
 
     @PreAuthorize("hasRole('ESTUDIANTE')")
     @PostMapping("/responder/{id}")
-    @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación de desarrollo.")
+    @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación .")
     public EntityModel<EvaluacionEstudiante> responder(@Valid @RequestBody EvaluacionEstudianteCrear crear) {
         EvaluacionEstudiante respuesta = service.responder(crear);
         return assembler.toModel(respuesta);
@@ -38,9 +38,9 @@ public class EvaluacionEstudianteController {
 
     @PreAuthorize("hasRole('ESTUDIANTE')")
     @GetMapping("/calificacion/{id}")
-    @Operation(summary = "Ver una respuesta enviada", description = "Permite al estudiante ver una respuesta enviada por ID y saber su puntuacion con su respectiva nota.")
-    public EvaluacionEstudianteRespuesta obtenerRespuesta(@PathVariable int id) {
-        return service.obtenerRespuestaPorId(id);
+    @Operation(summary = "Obtener calificaion", description = "Permite al estudiante ver su respuesta enviada por ID y saber su puntuacion con su respectiva nota.")
+    public EvaluacionEstudianteRespuesta obtenerCalificacion(@PathVariable int id) {
+        return service.obtenerCalificacionPorId(id);
     }
 
 
@@ -48,9 +48,9 @@ public class EvaluacionEstudianteController {
 @GetMapping("/evaluaciones/{id}")
 @Operation(
     summary = "Ver una evaluación asignada",
-    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor, usando su ID."
+    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor para que la pueda responder, usando su ID."
 )
 public Evaluacion verEvaluacion(@PathVariable int id) {
-    return service.obtenerEvaluacionPorId(id);
+    return service.mostrarEvaluacionPorId(id);
 }
 }
