@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.eduplatform.apiReporte.models.external.Boleta;
@@ -127,35 +129,39 @@ public class ReporteService {
     contenidoReporte.append("Total recaudado (según boletas): $").append(totalRecaudado).append("\n\n");
     contenidoReporte.append("Detalle de inscripciones:\n");
 
-    for (Inscripcion inscripcion : inscripciones) {
-    // Obtener la boleta asociada a la inscripción actual
-    Boleta boleta = null;
-    try {
-        boleta = webClientConToken()
-                .get()
-                .uri("http://localhost:8083/boletas/inscripcion/" + inscripcion.getIdInscripcion()) // Usa el ID de la inscripción
-                .retrieve()
-                .bodyToMono(Boleta.class)
-                .block();
-    } catch (Exception e) {
-        System.err.println("No se pudo obtener la boleta para la inscripción ID: " + inscripcion.getIdInscripcion());
-    }
+contenidoReporte.append("REPORTE DE INSCRIPCIONES Y BOLETAS\n\n");
+contenidoReporte.append("Fecha de generación: ")
+        .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+        .append("\n\n");
 
+
+
+
+// Crear un mapa para acceso rápido a las boletas por ID de inscripción
+Map<Long, Boleta> boletasPorInscripcion = new HashMap<>();
+for (Boleta boleta : boletas) {
+    boletasPorInscripcion.put(Long.valueOf(boleta.getId()), boleta); // conversión explícita
+}
+
+// Recorrer inscripciones y vincular con su boleta
+for (Inscripcion inscripcion : inscripciones) {
+    contenidoReporte.append("INSCRIPCIÓN:\n");
     contenidoReporte.append("- Estudiante: ").append(inscripcion.getNombreEstudiante())
             .append(" | Email: ").append(inscripcion.getEmailEstudiante())
             .append(" | Curso: ").append(inscripcion.getNombreCurso())
-            .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion());
+            .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion())
+            .append("\n");
 
-    // Agrega datos de la boleta si está disponible
+    Boleta boleta = boletasPorInscripcion.get(Long.valueOf(inscripcion.getIdInscripcion())); // conversión explícita
     if (boleta != null) {
-        contenidoReporte.append(" | N° Boleta: ").append(boleta.getNumeroBoleta())
+        contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
                 .append(" | Precio: $").append(boleta.getPrecio())
                 .append(" | Fecha Compra: ").append(boleta.getFechaCompra());
     } else {
-        contenidoReporte.append(" | Boleta: No disponible");
+        contenidoReporte.append("- Boleta: No disponible");
     }
 
-    contenidoReporte.append("\n");
+    contenidoReporte.append("\n\n");
 }
 
     // Generar PDF
