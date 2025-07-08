@@ -94,12 +94,13 @@ public class ReporteService {
     // Traer inscripciones
     List<Inscripcion> inscripciones = webClientConToken()
             .get()
-            .uri("http://localhost:8083/inscripciones/")
+            .uri("http://localhost:8083/inscripciones/reporte")
             .retrieve()
             .bodyToFlux(Inscripcion.class)
             .collectList()
             .block();
 
+        
     // Validación
     if (inscripciones == null || inscripciones.isEmpty()) {
         throw new RuntimeException("No se encontraron inscripciones para el reporte.");
@@ -110,12 +111,12 @@ public class ReporteService {
     // Traer boletas
     List<Boleta> boletas = webClientConToken()
             .get()
-            .uri("http://localhost:8083/boletas/todas")
+            .uri("http://localhost:8083/boletas/reporte")
             .retrieve()
             .bodyToFlux(Boleta.class)
             .collectList()
             .block();
-
+System.out.println(boletas);
     int totalRecaudado = 0;
     if (boletas != null && !boletas.isEmpty()) {
         totalRecaudado = boletas.stream().mapToInt(Boleta::getPrecio).sum();
@@ -139,8 +140,10 @@ contenidoReporte.append("Fecha de generación: ")
 
 // Crear un mapa para acceso rápido a las boletas por ID de inscripción
 Map<Long, Boleta> boletasPorInscripcion = new HashMap<>();
-for (Boleta boleta : boletas) {
-    boletasPorInscripcion.put(Long.valueOf(boleta.getId()), boleta); // conversión explícita
+if (boletas != null) {
+    for (Boleta boleta : boletas) {
+        boletasPorInscripcion.put(Long.valueOf(boleta.getId()), boleta); // conversión explícita
+    }
 }
 
 // Recorrer inscripciones y vincular con su boleta

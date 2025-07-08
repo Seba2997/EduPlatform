@@ -80,7 +80,15 @@ public class InscripcionController {
             linkTo(methodOn(InscripcionController.class).obtenerInscripcionesUsuario()).withSelfRel());
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reporte")
+    public List<Inscripcion> obtenerTodasLasInscripcionesInterno(){
+        List<Inscripcion> inscripciones = inscripcionService.obtenerTodos();
+        if (inscripciones == null || inscripciones.isEmpty()) {
+            throw new RuntimeException("No se encontraron inscripciones para el reporte.");
+        }
+        return inscripciones;
+    }
 
     
 }

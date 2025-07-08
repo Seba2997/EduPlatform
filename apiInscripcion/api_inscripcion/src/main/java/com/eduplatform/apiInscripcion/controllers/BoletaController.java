@@ -26,8 +26,12 @@ public class BoletaController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/todas")
-    public ResponseEntity<List<Boleta>> obtenerTodasBoletas() {
-        return ResponseEntity.ok(boletaService.obtenerTodasBoletas());
+    @GetMapping("/reporte")
+    public List<Boleta> obtenerTodasLasBoletas() {
+        List<Boleta> boletas = boletaService.obtenerTodasBoletas();
+        if (boletas == null || boletas.isEmpty()) {
+            throw new RuntimeException("No se encontraron boletas para el reporte.");
+        }
+        return boletas;
     }
 }
