@@ -77,8 +77,8 @@ public class ReporteService {
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
-            document.add(new Paragraph("Título: " + titulo).setBold());
-            document.add(new Paragraph("\nContenido del reporte:"));
+            document.add(new Paragraph("Edutech: " + titulo).setBold());
+            document.add(new Paragraph("\nReporte de Inscripciones:"));
             document.add(new Paragraph(contenido));
 
             document.close();
@@ -141,21 +141,21 @@ contenidoReporte.append("Fecha de generación: ")
 // Recorrer inscripciones y vincular con su boleta
 for (Inscripcion inscripcion : inscripciones) {
     contenidoReporte.append("INSCRIPCIÓN " + inscripcion.getId() + ": " + "\n");
-    contenidoReporte.append("- Estudiante: ").append(inscripcion.getNombreEstudiante())
-            .append(" | Email: ").append(inscripcion.getEmailEstudiante())
-            .append(" | Curso: ").append(inscripcion.getNombreCurso())
-            .append(" | Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion())
-            .append("\n");
+        contenidoReporte.append("INSCRIPCIÓN ").append(inscripcion.getId()).append(":\n")
+        .append("Estudiante: ").append(inscripcion.getNombreEstudiante()).append("\n")
+        .append("Email: ").append(inscripcion.getEmailEstudiante()).append("\n")
+        .append("Curso: ").append(inscripcion.getNombreCurso()).append("\n")
+        .append("Fecha de Inscripción: ").append(inscripcion.getFechaInscripcion()).append("\n");
 
     if (boletas != null) {
         for (Boleta boleta : boletas) {
             System.out.println("DEBUG => Inscripción ID: " + inscripcion.getId() +
-                   " vs Boleta.InscripciónID: " + boleta.getInscripcionId());
+                    " vs Boleta.InscripciónID: " + boleta.getInscripcionId());
             if (boleta.getInscripcionId() == inscripcion.getId()) {
-                contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
-                        .append(" | Precio: $").append(boleta.getPrecio())
-                        .append(" | Fecha Compra: ").append(boleta.getFechaCompra())
-                        .append("\n");
+                    contenidoReporte.append("N° Boleta: ").append(boleta.getNumeroBoleta()).append("\n")
+                    .append("Precio: $").append(boleta.getPrecio()).append("\n")
+                    .append("Fecha Compra: ").append(boleta.getFechaCompra()).append("\n");
+                    
             }
         }
     }
