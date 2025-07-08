@@ -116,7 +116,7 @@ public class ReporteService {
             .bodyToFlux(Boleta.class)
             .collectList()
             .block();
-System.out.println(boletas);
+
     int totalRecaudado = 0;
     if (boletas != null && !boletas.isEmpty()) {
         totalRecaudado = boletas.stream().mapToInt(Boleta::getPrecio).sum();
