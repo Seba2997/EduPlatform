@@ -30,7 +30,7 @@ public class EvaluacionEstudianteController {
 
     @PreAuthorize("hasRole('ESTUDIANTE')")
     @PostMapping("/responder/{id}")
-    @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación.")
+    @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación de desarrollo.")
     public EntityModel<EvaluacionEstudiante> responder(@Valid @RequestBody EvaluacionEstudianteCrear crear) {
         EvaluacionEstudiante respuesta = service.responder(crear);
         return assembler.toModel(respuesta);
@@ -48,7 +48,7 @@ public class EvaluacionEstudianteController {
 @GetMapping("/evaluaciones/{id}")
 @Operation(
     summary = "Ver una evaluación asignada",
-    description = "Permite al estudiante ver los datos de una evaluación creada por el profesor, usando su ID."
+    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor, usando su ID."
 )
 public Evaluacion verEvaluacion(@PathVariable int id) {
     return service.obtenerEvaluacionPorId(id);
