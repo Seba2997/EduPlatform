@@ -148,7 +148,7 @@ for (Inscripcion inscripcion : inscripciones) {
             .append("\n");
 
     for (Boleta boleta : boletas) {
-        if (boleta.getId() == inscripcion.getIdInscripcion()) {
+        if (boleta.getInscripcionId() == inscripcion.getIdInscripcion()) {
             contenidoReporte.append("- N° Boleta: ").append(boleta.getNumeroBoleta())
                     .append(" | Precio: $").append(boleta.getPrecio())
                     .append(" | Fecha Compra: ").append(boleta.getFechaCompra())

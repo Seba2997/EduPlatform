@@ -14,5 +14,7 @@ public class Boleta {
     private int numeroBoleta;
     private int precio;
     private String fechaCompra;
+    private int inscripcionId; 
+    
 
 }
