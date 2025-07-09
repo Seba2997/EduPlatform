@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.eduPlatform.apiCurso.assemblers.EvaluacionModelAssembler;
 import com.eduPlatform.apiCurso.models.entities.Evaluacion;
+import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
 import com.eduPlatform.apiCurso.models.requests.CalificacionRequest;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionCrear;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEditar;
@@ -82,14 +83,32 @@ public class EvaluacionController {
 
 //Calificar evaluacion de estudiante
 
-    @PreAuthorize("hasRole('PROFESOR','ADMIN')")
+  @PreAuthorize("hasAnyRole('PROFESOR','ADMIN')")
     @PostMapping("/calificar")
     @Operation(
         summary = "Registrar puntaje de evaluación del estudiante",
         description = "El profesor califica al estudiante, el sistema calcula la nota y guarda la información."
     )
-    public EvaluacionEstudianteRespuesta calificarEvaluacion(@RequestBody CalificacionRequest request) {
-        return evaluacionService.calificarRespuesta(request);
+    public EvaluacionEstudianteRespuesta calificarEvaluacion(
+        @RequestParam int evaluacionEstudianteId,
+        @RequestParam int puntajeObtenido
+    ) {
+        return evaluacionService.calificarRespuesta(evaluacionEstudianteId, puntajeObtenido);
     }
+
+
+    @PreAuthorize("hasAnyRole('PROFESOR','ADMIN')")
+    @GetMapping("/respuesta-estudiante/{evaluacionEstudianteId}")
+    @Operation(
+        summary = "Ver respuesta de un estudiante",
+        description = "Permite a un profesor ver la respuesta entregada por un estudiante específico."
+    )
+    public ResponseEntity<EvaluacionEstudiante> verRespuestaEstudiante(@PathVariable int evaluacionEstudianteId) {
+        EvaluacionEstudiante respuesta = evaluacionService.verRespuestaEstudiantePorId(evaluacionEstudianteId);
+        return ResponseEntity.ok(respuesta);
+    }
+
+   
+
 
 }

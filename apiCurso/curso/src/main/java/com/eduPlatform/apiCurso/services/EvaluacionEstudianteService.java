@@ -16,7 +16,6 @@ import com.eduPlatform.apiCurso.models.requests.EvaluacionEstudianteCrear;
 import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;
 import com.eduPlatform.apiCurso.models.user.UsuarioDTO;
 import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRepository;
-import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRespuestaRepository;
 import com.eduPlatform.apiCurso.repositories.EvaluacionRepository;
 
 import org.springframework.http.HttpHeaders;
@@ -30,8 +29,7 @@ public class EvaluacionEstudianteService {
     @Autowired
     private EvaluacionRepository evaluacionRepo;
 
-     @Autowired
-    private EvaluacionEstudianteRespuestaRepository respuestaRepo;
+
 
 
 
@@ -69,17 +67,27 @@ public class EvaluacionEstudianteService {
     }
 
 
-    public EvaluacionEstudianteRespuesta obtenerCalificacionPorId(int idRespuesta) {
-    return respuestaRepo.findById(idRespuesta)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Respuesta no encontrada"));
+
+public EvaluacionEstudianteRespuesta obtenerCalificacionPorId(int id) {
+    EvaluacionEstudiante entity = evaluacionEstudianteRepo.findById(id)
+        .orElseThrow(() -> new RuntimeException("Evaluación no encontrada"));
+
+    return new EvaluacionEstudianteRespuesta(
+        entity.getEvaluacionEstudianteid(),
+        entity.getNombreEstudiante(),
+        entity.getEmailEstudiante(),
+        entity.getRespuesta(),
+        entity.getPuntajeObtenido(),
+        entity.getNota(),
+        entity.getEvaluacion().getTitulo()
+    );
 }
 
+public Evaluacion obtenerEvaluacionPorEvaluacionEstudianteId(int evaluacionEstudianteId) {
+    EvaluacionEstudiante evaluacionEstudiante = evaluacionEstudianteRepo.findById(evaluacionEstudianteId)
+        .orElseThrow(() -> new RuntimeException("Evaluación del estudiante no encontrada con ID: " + evaluacionEstudianteId));
 
-public Evaluacion mostrarEvaluacionPorId(int idEvaluacion) {
-    return evaluacionRepo.findById(idEvaluacion)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluación no encontrada"));
+    return evaluacionEstudiante.getEvaluacion();
 }
-
-
 
 }

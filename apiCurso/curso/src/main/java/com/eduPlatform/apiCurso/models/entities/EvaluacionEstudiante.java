@@ -21,13 +21,12 @@ public class EvaluacionEstudiante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int evaluacionEstudianteid;
-
-    private String respuesta;
-
-    private int puntajeObtenido;
-
     private String nombreEstudiante;
     private String emailEstudiante;
+    private String respuesta;
+    private int puntajeObtenido;
+    private double nota;
+    
 
     @ManyToOne
     @JoinColumn(name = "evaluacion_id", nullable = false)
@@ -35,3 +34,4 @@ public class EvaluacionEstudiante {
 
 
 }
+   

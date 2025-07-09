@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class EvaluacionEstudianteController {
 
     @Autowired
-    private EvaluacionEstudianteService service;
+    private EvaluacionEstudianteService evaluacionEstudianteService;
 
     @Autowired
     private EvaluacionEstudianteModelAssembler assembler;
@@ -32,25 +33,22 @@ public class EvaluacionEstudianteController {
     @PostMapping("/responder/{id}")
     @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación .")
     public EntityModel<EvaluacionEstudiante> responder(@Valid @RequestBody EvaluacionEstudianteCrear crear) {
-        EvaluacionEstudiante respuesta = service.responder(crear);
+        EvaluacionEstudiante respuesta = evaluacionEstudianteService.responder(crear);
         return assembler.toModel(respuesta);
     }
 
-    @PreAuthorize("hasRole('ESTUDIANTE')")
-    @GetMapping("/calificacion/{id}")
-    @Operation(summary = "Obtener calificaion", description = "Permite al estudiante ver su respuesta enviada por ID y saber su puntuacion con su respectiva nota.")
-    public EvaluacionEstudianteRespuesta obtenerCalificacion(@PathVariable int id) {
-        return service.obtenerCalificacionPorId(id);
-    }
-
-
-    @PreAuthorize("hasRole('ESTUDIANTE')")
-@GetMapping("/evaluaciones/{id}")
-@Operation(
-    summary = "Ver una evaluación asignada",
-    description = "Permite al estudiante ver los datos de una evaluación de desarrollo creada por el profesor para que la pueda responder, usando su ID."
-)
-public Evaluacion verEvaluacion(@PathVariable int id) {
-    return service.mostrarEvaluacionPorId(id);
+    @GetMapping("/ver-calificacion/{id}")
+@PreAuthorize("hasAnyRole('ESTUDIANTE')")
+public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariable int id) {
+    EvaluacionEstudianteRespuesta calificacion = evaluacionEstudianteService.obtenerCalificacionPorId(id);
+    return ResponseEntity.ok(calificacion);
 }
+
+@GetMapping("/evaluacion-estudiante/{id}/evaluacion")
+@PreAuthorize("hasAnyRole('PROFESOR','ADMIN')")
+public ResponseEntity<Evaluacion> obtenerEvaluacionPorEstudiante(@PathVariable int id) {
+    Evaluacion evaluacion = evaluacionEstudianteService.obtenerEvaluacionPorEvaluacionEstudianteId(id);
+    return ResponseEntity.ok(evaluacion);
+}
+
 }
