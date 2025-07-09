@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import com.eduPlatform.apiCurso.assemblers.EvaluacionModelAssembler;
 import com.eduPlatform.apiCurso.models.entities.Evaluacion;
 import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
-import com.eduPlatform.apiCurso.models.requests.CalificacionRequest;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionCrear;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEditar;
 import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;

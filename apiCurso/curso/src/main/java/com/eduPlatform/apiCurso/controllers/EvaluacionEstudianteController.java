@@ -37,7 +37,7 @@ public class EvaluacionEstudianteController {
         return assembler.toModel(respuesta);
     }
 
-    @GetMapping("/ver-calificacion/{id}")
+    @GetMapping("/calificacion/{id}")
 @PreAuthorize("hasRole('ESTUDIANTE')")
 @Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación .")
 public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariable int id) {
@@ -45,7 +45,7 @@ public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariab
     return ResponseEntity.ok(calificacion);
 }
 
-@GetMapping("/evaluacion-estudiante/{id}/evaluacion")
+@GetMapping("/evaluacion/{id}")
 @PreAuthorize("hasRole('ESTUDIANTE')")
 @Operation(summary = "Ver una evaluación", description = "Permite que un estudiante vea una evaluación .")
 public ResponseEntity<Evaluacion> obtenerEvaluacionPorEstudiante(@PathVariable int id) {
