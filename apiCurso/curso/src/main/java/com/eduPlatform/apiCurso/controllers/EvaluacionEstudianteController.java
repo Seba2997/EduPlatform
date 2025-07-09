@@ -38,14 +38,16 @@ public class EvaluacionEstudianteController {
     }
 
     @GetMapping("/ver-calificacion/{id}")
-@PreAuthorize("hasAnyRole('ESTUDIANTE')")
+@PreAuthorize("hasRole('ESTUDIANTE')")
+@Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación .")
 public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariable int id) {
     EvaluacionEstudianteRespuesta calificacion = evaluacionEstudianteService.obtenerCalificacionPorId(id);
     return ResponseEntity.ok(calificacion);
 }
 
 @GetMapping("/evaluacion-estudiante/{id}/evaluacion")
-@PreAuthorize("hasAnyRole('PROFESOR','ADMIN')")
+@PreAuthorize("hasRole('ESTUDIANTE')")
+@Operation(summary = "Ver una evaluación", description = "Permite que un estudiante vea una evaluación .")
 public ResponseEntity<Evaluacion> obtenerEvaluacionPorEstudiante(@PathVariable int id) {
     Evaluacion evaluacion = evaluacionEstudianteService.obtenerEvaluacionPorEvaluacionEstudianteId(id);
     return ResponseEntity.ok(evaluacion);
