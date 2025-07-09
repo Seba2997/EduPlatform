@@ -24,6 +24,7 @@ import com.eduPlatform.apiCurso.repositories.ProfesorRepository;
 
 @Service
 public class CursoService {
+    
     @Autowired
     private CursoRepository cursoRepo;
 
