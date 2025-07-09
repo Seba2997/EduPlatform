@@ -15,6 +15,7 @@ import com.eduPlatform.apiCurso.models.entities.Evaluacion;
 import com.eduPlatform.apiCurso.models.entities.EvaluacionEstudiante;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionCrear;
 import com.eduPlatform.apiCurso.models.requests.EvaluacionEditar;
+import com.eduPlatform.apiCurso.models.requests.calificarDTO;
 import com.eduPlatform.apiCurso.models.responses.EvaluacionEstudianteRespuesta;
 import com.eduPlatform.apiCurso.services.EvaluacionService;
 
@@ -89,10 +90,8 @@ public class EvaluacionController {
         description = "El profesor califica al estudiante, el sistema calcula la nota y guarda la información."
     )
     public EvaluacionEstudianteRespuesta calificarEvaluacion(
-        @RequestParam int evaluacionEstudianteId,
-        @RequestParam int puntajeObtenido
-    ) {
-        return evaluacionService.calificarRespuesta(evaluacionEstudianteId, puntajeObtenido);
+        @RequestParam int evaluacionEstudianteId, @RequestBody @Valid calificarDTO calificarDTO) {
+        return evaluacionService.calificarRespuesta(evaluacionEstudianteId, calificarDTO.getPuntajeObtenido());
     }
 
 

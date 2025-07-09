@@ -38,19 +38,22 @@ public class EvaluacionEstudianteController {
     }
 
     @GetMapping("/calificacion/{id}")
-@PreAuthorize("hasRole('ESTUDIANTE')")
-@Operation(summary = "Responder una evaluación", description = "Permite que un estudiante responda una evaluación .")
-public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariable int id) {
-    EvaluacionEstudianteRespuesta calificacion = evaluacionEstudianteService.obtenerCalificacionPorId(id);
-    return ResponseEntity.ok(calificacion);
-}
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @Operation(summary = "Ver calificación de una evaluación", description = "Permite que un estudiante vea su calificación en una evaluación a traves del ID.")
+    public ResponseEntity<EvaluacionEstudianteRespuesta> verCalificacion(@PathVariable int id) {
+        EvaluacionEstudianteRespuesta calificacion = evaluacionEstudianteService.obtenerCalificacionPorId(id);
+        return ResponseEntity.ok(calificacion);
+    }
 
-@GetMapping("/evaluacion/{id}")
-@PreAuthorize("hasRole('ESTUDIANTE')")
-@Operation(summary = "Ver una evaluación", description = "Permite que un estudiante vea una evaluación .")
-public ResponseEntity<Evaluacion> obtenerEvaluacionPorEstudiante(@PathVariable int id) {
-    Evaluacion evaluacion = evaluacionEstudianteService.obtenerEvaluacionPorEvaluacionEstudianteId(id);
-    return ResponseEntity.ok(evaluacion);
-}
+    @GetMapping("/evaluacion/{id}")
+    @PreAuthorize("hasRole('ESTUDIANTE')")
+    @Operation(summary = "Ver una evaluación", description = "Permite que un estudiante visualize la pregunta de la evaluación a traves del ID.")
+    public ResponseEntity<Evaluacion> obtenerEvaluacion(@PathVariable int id) {
+        Evaluacion evaluacion = evaluacionEstudianteService.obtenerEvaluacionPorId(id);
+        return ResponseEntity.ok(evaluacion);
+    }   
+
+    
+
 
 }

@@ -5,6 +5,7 @@ package com.eduPlatform.apiCurso.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,10 +19,13 @@ import com.eduPlatform.apiCurso.models.user.UsuarioDTO;
 import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRepository;
 import com.eduPlatform.apiCurso.repositories.EvaluacionRepository;
 
-import org.springframework.http.HttpHeaders;
+
 
 @Service
 public class EvaluacionEstudianteService {
+
+    @Autowired
+    private WebClient webClient;
 
     @Autowired
     private EvaluacionEstudianteRepository evaluacionEstudianteRepo;
@@ -29,22 +33,19 @@ public class EvaluacionEstudianteService {
     @Autowired
     private EvaluacionRepository evaluacionRepo;
 
-
+    
 
 
 
     // El estudiante responde (crea una respuesta)
     public EvaluacionEstudiante responder(EvaluacionEstudianteCrear crear) {
 
-        String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
-        
-        WebClient webClient = WebClient.builder()
-        .baseUrl("http://localhost:8082") // URL del microservicio apiUsuario
-        .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-        .build();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String jwt = (String) auth.getCredentials();
 
         UsuarioDTO user = webClient.get()
-        .uri("/mi-perfil")
+        .uri("http://localhost:8082/user/mi-perfil")
+        .header("Authorization", "Bearer " + jwt)
         .retrieve()
         .bodyToMono(UsuarioDTO.class)
         .block();
@@ -83,11 +84,13 @@ public EvaluacionEstudianteRespuesta obtenerCalificacionPorId(int id) {
     );
 }
 
-public Evaluacion obtenerEvaluacionPorEvaluacionEstudianteId(int evaluacionEstudianteId) {
-    EvaluacionEstudiante evaluacionEstudiante = evaluacionEstudianteRepo.findById(evaluacionEstudianteId)
-        .orElseThrow(() -> new RuntimeException("Evaluación del estudiante no encontrada con ID: " + evaluacionEstudianteId));
+public Evaluacion obtenerEvaluacionPorId(int idEvaluacion) {
+    Evaluacion evaluacion = evaluacionRepo.findById(idEvaluacion)
+        .orElseThrow(() -> new RuntimeException("Evaluación no encontrada"));
 
-    return evaluacionEstudiante.getEvaluacion();
+    return evaluacion;
 }
+
+
 
 }

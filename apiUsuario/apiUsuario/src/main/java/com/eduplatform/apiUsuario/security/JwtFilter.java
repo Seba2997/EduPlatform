@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         .collect(Collectors.toList());
 
                     // Crear token de autenticación y setearlo en el contexto
-                    var authToken = new UsernamePasswordAuthenticationToken(email, null, authorities);
+                    var authToken = new UsernamePasswordAuthenticationToken(email, token, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (JwtException e) {
