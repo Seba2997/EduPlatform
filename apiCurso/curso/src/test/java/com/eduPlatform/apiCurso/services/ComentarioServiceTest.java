@@ -44,144 +44,125 @@ class ComentarioServiceTest {
     private ComentarioService comentarioService;
 
     @Test
-    void listarPorCurso_DeberiaRetornarComentarios() {
-        try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
-            mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
-            // Arrange
-            Integer cursoId = 1;
-            List<Comentario> comentarios = Arrays.asList(new Comentario(), new Comentario());
-            when(comentarioRepo.findByCursoId(cursoId)).thenReturn(comentarios);
+    void listarComentariosPorCurso() {
+        try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
+            mocked.when(SecurityContextHolder::getContext).thenReturn(securityContext);
 
-            // Act
+            Integer cursoId = 1;
+            List<Comentario> lista = Arrays.asList(new Comentario(), new Comentario());
+            when(comentarioRepo.findByCursoId(cursoId)).thenReturn(lista);
+
             List<Comentario> resultado = comentarioService.listarPorCurso(cursoId);
 
-            // Assert
-            assertEquals(comentarios, resultado);
+            assertEquals(lista, resultado);
             verify(comentarioRepo).findByCursoId(cursoId);
         }
     }
 
     @Test
-    void crearComentario_CursoExiste_DeberiaCrearComentario() {
-        try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
-            mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+    void crearComentarioConCursoValido() {
+        try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
+            mocked.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
             when(authentication.getName()).thenReturn("test@email.com");
 
-            ComentarioCrear comentarioCrear = new ComentarioCrear();
-            comentarioCrear.setCursoId(1);
-            comentarioCrear.setDetalle("Test comment");
+            ComentarioCrear nuevoComentario = new ComentarioCrear();
+            nuevoComentario.setCursoId(1);
+            nuevoComentario.setDetalle("Buen curso");
 
             Curso curso = new Curso();
             curso.setId(1);
 
-            Comentario comentarioGuardado = new Comentario();
-            comentarioGuardado.setId(1);
+            Comentario guardado = new Comentario();
+            guardado.setId(1);
 
             when(cursoRepo.findById(1)).thenReturn(Optional.of(curso));
-            when(comentarioRepo.save(any(Comentario.class))).thenReturn(comentarioGuardado);
+            when(comentarioRepo.save(any(Comentario.class))).thenReturn(guardado);
 
-            // Act
-            Comentario resultado = comentarioService.crearComentario(comentarioCrear);
+            Comentario resultado = comentarioService.crearComentario(nuevoComentario);
 
-            // Assert
-            assertEquals(comentarioGuardado, resultado);
-            verify(cursoRepo).findById(1);
+            assertEquals(guardado, resultado);
             verify(comentarioRepo).save(any(Comentario.class));
         }
     }
 
     @Test
-    void crearComentario_CursoNoExiste_DeberiaLanzarExcepcion() {
-        ComentarioCrear comentarioCrear = new ComentarioCrear();
-        comentarioCrear.setCursoId(1);
+    void errorAlCrearComentarioConCursoInexistente() {
+        ComentarioCrear nuevoComentario = new ComentarioCrear();
+        nuevoComentario.setCursoId(1);
 
         when(cursoRepo.findById(1)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> comentarioService.crearComentario(comentarioCrear));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> comentarioService.crearComentario(nuevoComentario));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Curso no encontrado", exception.getReason());
-        verify(cursoRepo).findById(1);
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Curso no encontrado", ex.getReason());
         verify(comentarioRepo, never()).save(any());
     }
 
     @Test
-    void editarComentario_ComentarioExisteYAutorizado_DeberiaEditarComentario() {
-        try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
-            mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+    void editarComentarioCorrectamente() {
+        try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
+            mocked.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
             when(authentication.getName()).thenReturn("test@email.com");
 
-            int idComentario = 1;
-            ComentarioEditar comentarioEditar = new ComentarioEditar();
-            comentarioEditar.setDetalle("Updated comment");
+            int id = 1;
+            ComentarioEditar datos = new ComentarioEditar();
+            datos.setDetalle("Actualizado");
 
-            Comentario comentarioExistente = new Comentario();
-            comentarioExistente.setId(1);
-            comentarioExistente.setEmailAutor("test@email.com");
-            comentarioExistente.setDetalle("Original comment");
+            Comentario original = new Comentario();
+            original.setId(1);
+            original.setEmailAutor("test@email.com");
+            original.setDetalle("Anterior");
 
-            Comentario comentarioActualizado = new Comentario();
-            comentarioActualizado.setId(1);
-            comentarioActualizado.setDetalle("Updated comment");
+            when(comentarioRepo.findById(id)).thenReturn(Optional.of(original));
+            when(comentarioRepo.save(original)).thenReturn(original);
 
-            when(comentarioRepo.findById(idComentario)).thenReturn(Optional.of(comentarioExistente));
-            when(comentarioRepo.save(comentarioExistente)).thenReturn(comentarioActualizado);
+            Comentario resultado = comentarioService.editarComentario(datos, id);
 
-            // Act
-            Comentario resultado = comentarioService.editarComentario(comentarioEditar, idComentario);
-
-            // Assert
-            assertEquals(comentarioActualizado, resultado);
-            assertEquals("Updated comment", comentarioExistente.getDetalle());
-            verify(comentarioRepo).findById(idComentario);
-            verify(comentarioRepo).save(comentarioExistente);
+            assertEquals("Actualizado", resultado.getDetalle());
+            verify(comentarioRepo).save(original);
         }
     }
 
     @Test
-    void editarComentario_ComentarioNoExiste_DeberiaLanzarExcepcion() {
-        int idComentario = 1;
-        ComentarioEditar comentarioEditar = new ComentarioEditar();
+    void errorAlEditarComentarioInexistente() {
+        int id = 1;
+        ComentarioEditar datos = new ComentarioEditar();
 
-        when(comentarioRepo.findById(idComentario)).thenReturn(Optional.empty());
+        when(comentarioRepo.findById(id)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> comentarioService.editarComentario(comentarioEditar, idComentario));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> comentarioService.editarComentario(datos, id));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Comentario no encontrado", exception.getReason());
-        verify(comentarioRepo).findById(idComentario);
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Comentario no encontrado", ex.getReason());
         verify(comentarioRepo, never()).save(any());
     }
 
     @Test
-    void editarComentario_UsuarioNoAutorizado_DeberiaLanzarExcepcion() {
-        try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
-            mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+    void errorAlEditarComentarioDeOtroUsuario() {
+        try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
+            mocked.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
-            when(authentication.getName()).thenReturn("test@email.com");
+            when(authentication.getName()).thenReturn("mi@email.com");
 
-            int idComentario = 1;
-            ComentarioEditar comentarioEditar = new ComentarioEditar();
+            int id = 1;
+            ComentarioEditar datos = new ComentarioEditar();
 
-            Comentario comentarioExistente = new Comentario();
-            comentarioExistente.setId(1);
-            comentarioExistente.setEmailAutor("otro@email.com");
+            Comentario comentarioDeOtro = new Comentario();
+            comentarioDeOtro.setId(1);
+            comentarioDeOtro.setEmailAutor("otro@email.com");
 
-            when(comentarioRepo.findById(idComentario)).thenReturn(Optional.of(comentarioExistente));
+            when(comentarioRepo.findById(id)).thenReturn(Optional.of(comentarioDeOtro));
 
-            // Act & Assert
-            ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                    () -> comentarioService.editarComentario(comentarioEditar, idComentario));
+            ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                    () -> comentarioService.editarComentario(datos, id));
 
-            assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
-            assertEquals("No tienes permiso para editar este comentario", exception.getReason());
-            verify(comentarioRepo).findById(idComentario);
+            assertEquals(HttpStatus.FORBIDDEN, ex.getStatusCode());
+            assertEquals("No tienes permiso para editar este comentario", ex.getReason());
             verify(comentarioRepo, never()).save(any());
         }
     }

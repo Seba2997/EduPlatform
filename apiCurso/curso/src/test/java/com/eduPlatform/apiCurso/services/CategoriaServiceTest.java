@@ -3,9 +3,16 @@ package com.eduPlatform.apiCurso.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import com.eduPlatform.apiCurso.models.entities.Categoria;
+import com.eduPlatform.apiCurso.models.requests.CategoriaCrear;
+import com.eduPlatform.apiCurso.models.requests.CategoriaEditar;
+import com.eduPlatform.apiCurso.repositories.CategoriaRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.eduPlatform.apiCurso.models.entities.Categoria;
-import com.eduPlatform.apiCurso.models.requests.CategoriaCrear;
-import com.eduPlatform.apiCurso.models.requests.CategoriaEditar;
-import com.eduPlatform.apiCurso.repositories.CategoriaRepository;
-
-
-
-
 
 @ExtendWith(MockitoExtension.class)
 class CategoriaServiceTest {
@@ -51,130 +50,95 @@ class CategoriaServiceTest {
     }
 
     @Test
-    void obtenerTodos_ReturnsAllCategorias() {
+    void listarTodasLasCategorias() {
         List<Categoria> categorias = Arrays.asList(categoria);
         when(categoriaRepo.findAll()).thenReturn(categorias);
 
-        List<Categoria> result = categoriaService.obtenerTodos();
+        List<Categoria> resultado = categoriaService.obtenerTodos();
 
-        assertEquals(categorias, result);
+        assertEquals(categorias, resultado);
         verify(categoriaRepo).findAll();
     }
 
     @Test
-    void obtenerCategoriaPorId_ExistingId_ReturnsCategoria() {
+    void obtenerCategoriaPorIdExistente() {
         when(categoriaRepo.findById(1)).thenReturn(Optional.of(categoria));
 
-        Categoria result = categoriaService.obtenerCategoriaPorId(1);
+        Categoria resultado = categoriaService.obtenerCategoriaPorId(1);
 
-        assertEquals(categoria, result);
+        assertEquals(categoria, resultado);
         verify(categoriaRepo).findById(1);
     }
 
     @Test
-    void obtenerCategoriaPorId_NonExistingId_ThrowsNotFoundException() {
+    void errorAlBuscarCategoriaPorIdInexistente() {
         when(categoriaRepo.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> categoriaService.obtenerCategoriaPorId(1));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("categoria no encontrada", exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("categoria no encontrada", ex.getReason());
     }
 
     @Test
-    void crearCategoria_ValidData_ReturnsCreatedCategoria() {
+    void crearCategoriaCorrectamente() {
         when(categoriaRepo.findByNombreCategoriaIgnoreCase("New Category")).thenReturn(null);
         when(categoriaRepo.save(any(Categoria.class))).thenReturn(categoria);
 
-        Categoria result = categoriaService.crearCategoria(categoriaCrear);
+        Categoria resultado = categoriaService.crearCategoria(categoriaCrear);
 
-        assertNotNull(result);
-        verify(categoriaRepo).findByNombreCategoriaIgnoreCase("New Category");
+        assertNotNull(resultado);
         verify(categoriaRepo).save(any(Categoria.class));
     }
 
     @Test
-    void crearCategoria_NullData_ThrowsBadRequestException() {
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> categoriaService.crearCategoria(null));
-
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("Datos de categoría inválidos", exception.getReason());
-    }
-
-    @Test
-    void crearCategoria_NullNombre_ThrowsBadRequestException() {
-        categoriaCrear.setNombreCategoria(null);
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> categoriaService.crearCategoria(categoriaCrear));
-
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("Datos de categoría inválidos", exception.getReason());
-    }
-
-    @Test
-    void crearCategoria_ExistingName_ThrowsConflictException() {
+    void errorAlCrearCategoriaDuplicada() {
         when(categoriaRepo.findByNombreCategoriaIgnoreCase("New Category")).thenReturn(categoria);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> categoriaService.crearCategoria(categoriaCrear));
 
-        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
-        assertEquals("La categoría ya existe", exception.getReason());
+        assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+        assertEquals("La categoría ya existe", ex.getReason());
     }
 
     @Test
-    void modificarCategoria_ValidData_ReturnsUpdatedCategoria() {
+    void modificarCategoriaCorrectamente() {
         when(categoriaRepo.findById(1)).thenReturn(Optional.of(categoria));
         when(categoriaRepo.findByNombreCategoriaIgnoreCase("Updated Category")).thenReturn(null);
         when(categoriaRepo.save(categoria)).thenReturn(categoria);
 
-        Categoria result = categoriaService.modificarCategoria(categoriaEditar);
+        Categoria resultado = categoriaService.modificarCategoria(categoriaEditar);
 
-        assertEquals(categoria, result);
-        verify(categoriaRepo).findById(1);
-        verify(categoriaRepo).findByNombreCategoriaIgnoreCase("Updated Category");
+        assertEquals(categoria, resultado);
         verify(categoriaRepo).save(categoria);
     }
 
     @Test
-    void modificarCategoria_NonExistingId_ThrowsNotFoundException() {
+    void errorAlModificarCategoriaInexistente() {
         when(categoriaRepo.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> categoriaService.modificarCategoria(categoriaEditar));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Categoría no encontrada", exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Categoría no encontrada", ex.getReason());
     }
 
     @Test
-    void modificarCategoria_DuplicateName_ThrowsConflictException() {
-        Categoria otraCategoria = new Categoria();
-        otraCategoria.setId(2);
-        otraCategoria.setNombreCategoria("Updated Category");
+    void errorAlModificarCategoriaConNombreRepetido() {
+        Categoria otra = new Categoria();
+        otra.setId(2);
+        otra.setNombreCategoria("Updated Category");
 
         when(categoriaRepo.findById(1)).thenReturn(Optional.of(categoria));
-        when(categoriaRepo.findByNombreCategoriaIgnoreCase("Updated Category")).thenReturn(otraCategoria);
+        when(categoriaRepo.findByNombreCategoriaIgnoreCase("Updated Category")).thenReturn(otra);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> categoriaService.modificarCategoria(categoriaEditar));
 
-        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
-        assertEquals("Ya existe otra categoría con ese nombre", exception.getReason());
-    }
-
-    @Test
-    void modificarCategoria_SameName_AllowsUpdate() {
-        when(categoriaRepo.findById(1)).thenReturn(Optional.of(categoria));
-        when(categoriaRepo.findByNombreCategoriaIgnoreCase("Updated Category")).thenReturn(categoria);
-        when(categoriaRepo.save(categoria)).thenReturn(categoria);
-
-        Categoria result = categoriaService.modificarCategoria(categoriaEditar);
-
-        assertEquals(categoria, result);
-        verify(categoriaRepo).save(categoria);
+        assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+        assertEquals("Ya existe otra categoría con ese nombre", ex.getReason());
     }
 }

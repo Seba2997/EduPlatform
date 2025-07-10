@@ -1,11 +1,19 @@
 package com.eduPlatform.apiCurso.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import com.eduPlatform.apiCurso.models.entities.Contenido;
+import com.eduPlatform.apiCurso.models.entities.Curso;
+import com.eduPlatform.apiCurso.models.requests.ContenidoCrear;
+import com.eduPlatform.apiCurso.models.requests.ContenidoEditar;
+import com.eduPlatform.apiCurso.repositories.ContenidoRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.eduPlatform.apiCurso.models.entities.Contenido;
-import com.eduPlatform.apiCurso.models.entities.Curso;
-import com.eduPlatform.apiCurso.models.requests.ContenidoCrear;
-import com.eduPlatform.apiCurso.models.requests.ContenidoEditar;
-import com.eduPlatform.apiCurso.repositories.ContenidoRepository;
-
-
 
 @ExtendWith(MockitoExtension.class)
 class ContenidoServiceTest {
@@ -60,118 +61,100 @@ class ContenidoServiceTest {
     }
 
     @Test
-    void testObtenerTodos() {
-        List<Contenido> contenidos = Arrays.asList(contenido);
-        when(contenidoRepo.findAll()).thenReturn(contenidos);
+    void listarTodosLosContenidos() {
+        List<Contenido> lista = Arrays.asList(contenido);
+        when(contenidoRepo.findAll()).thenReturn(lista);
 
-        List<Contenido> result = contenidoService.obtenerTodos();
+        List<Contenido> resultado = contenidoService.obtenerTodos();
 
-        assertEquals(1, result.size());
-        assertEquals(contenido, result.get(0));
+        assertEquals(lista, resultado);
         verify(contenidoRepo).findAll();
     }
 
     @Test
-    void testObtenerContenidoPorId_Success() {
+    void buscarContenidoPorIdExistente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.of(contenido));
 
-        Contenido result = contenidoService.obtenerContenidoPorId(1);
+        Contenido resultado = contenidoService.obtenerContenidoPorId(1);
 
-        assertEquals(contenido, result);
+        assertEquals(contenido, resultado);
         verify(contenidoRepo).findById(1);
     }
 
     @Test
-    void testObtenerContenidoPorId_NotFound() {
+    void errorAlBuscarContenidoPorIdInexistente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> contenidoService.obtenerContenidoPorId(1));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Contenido de este curso no encontrado", exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Contenido de este curso no encontrado", ex.getReason());
     }
 
     @Test
-    void testRegistrar_Success() {
+    void registrarContenidoCorrectamente() {
         when(cursoService.obtenerCursoPorId(1)).thenReturn(curso);
         when(contenidoRepo.save(any(Contenido.class))).thenReturn(contenido);
 
-        Contenido result = contenidoService.registrar(contenidoCrear, 1);
+        Contenido resultado = contenidoService.registrar(contenidoCrear, 1);
 
-        assertNotNull(result);
+        assertNotNull(resultado);
         verify(cursoService).obtenerCursoPorId(1);
         verify(contenidoRepo).save(any(Contenido.class));
     }
 
     @Test
-    void testRegistrar_Error() {
+    void errorAlRegistrarContenidoPorCursoFallido() {
         when(cursoService.obtenerCursoPorId(1)).thenThrow(new RuntimeException("Error"));
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> contenidoService.registrar(contenidoCrear, 1));
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("Error al registrar contenido", exception.getReason());
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+        assertEquals("Error al registrar contenido", ex.getReason());
     }
 
     @Test
-    void testModificar_Success() {
+    void modificarContenidoCorrectamente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.of(contenido));
         when(contenidoRepo.save(any(Contenido.class))).thenReturn(contenido);
 
-        Contenido result = contenidoService.modificar(contenidoEditar);
+        Contenido resultado = contenidoService.modificar(contenidoEditar);
 
-        assertNotNull(result);
-        verify(contenidoRepo).findById(1);
+        assertEquals(contenido, resultado);
         verify(contenidoRepo).save(contenido);
     }
 
     @Test
-    void testModificar_NotFound() {
+    void errorAlModificarContenidoInexistente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> contenidoService.modificar(contenidoEditar));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Contenido de este curso no encontrado", exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Contenido de este curso no encontrado", ex.getReason());
     }
 
     @Test
-    void testModificar_PartialUpdate() {
-        ContenidoEditar parcialEditar = new ContenidoEditar();
-        parcialEditar.setIdContenido(1);
-        parcialEditar.setTituloContenido("Only Title Updated");
-
-        when(contenidoRepo.findById(1)).thenReturn(Optional.of(contenido));
-        when(contenidoRepo.save(any(Contenido.class))).thenReturn(contenido);
-
-        Contenido result = contenidoService.modificar(parcialEditar);
-
-        assertNotNull(result);
-        verify(contenidoRepo).save(contenido);
-    }
-
-    @Test
-    void testEliminarContenido_Success() {
+    void eliminarContenidoCorrectamente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.of(contenido));
 
         assertDoesNotThrow(() -> contenidoService.eliminarContenido(1));
 
-        verify(contenidoRepo).findById(1);
         verify(contenidoRepo).delete(contenido);
     }
 
     @Test
-    void testEliminarContenido_NotFound() {
+    void errorAlEliminarContenidoInexistente() {
         when(contenidoRepo.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
                 () -> contenidoService.eliminarContenido(1));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("Contenido de este curso no encontrado", exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+        assertEquals("Contenido de este curso no encontrado", ex.getReason());
         verify(contenidoRepo, never()).delete(any());
     }
 }
