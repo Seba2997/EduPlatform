@@ -16,13 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
-
-
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -80,9 +79,9 @@ class UserServiceTest {
     void obtenerUnoDTO_WhenUserNotExists_ShouldThrowException() {
         when(userRepository.findById(1)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, 
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.obtenerUnoDTO(1));
-        
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Usuario no encontrado", exception.getReason());
     }
@@ -103,7 +102,7 @@ class UserServiceTest {
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.obtenerPorEmail("test@example.com"));
-        
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
@@ -158,8 +157,9 @@ class UserServiceTest {
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.registrarComo(userCrear, RolNombre.ESTUDIANTE));
-        
+
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+        assertEquals("El correo ya está registrado", exception.getReason());
     }
 
     @Test
@@ -169,8 +169,9 @@ class UserServiceTest {
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.registrarComo(userCrear, RolNombre.ESTUDIANTE));
-        
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Rol no encontrado", exception.getReason());
     }
 
     @Test
@@ -207,7 +208,7 @@ class UserServiceTest {
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.modificar(userUpdate));
-        
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 
@@ -228,7 +229,7 @@ class UserServiceTest {
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
             () -> userService.cambiarEstado(1));
-        
+
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
 }

@@ -6,7 +6,6 @@ import com.eduPlatform.apiCurso.models.requests.ComentarioCrear;
 import com.eduPlatform.apiCurso.models.requests.ComentarioEditar;
 import com.eduPlatform.apiCurso.repositories.ComentarioRepository;
 import com.eduPlatform.apiCurso.repositories.CursoRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,14 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-
-
 
 @ExtendWith(MockitoExtension.class)
 class ComentarioServiceTest {
@@ -45,32 +43,30 @@ class ComentarioServiceTest {
     @InjectMocks
     private ComentarioService comentarioService;
 
-    @BeforeEach
-    void setUp() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("test@email.com");
-    }
-
     @Test
     void listarPorCurso_DeberiaRetornarComentarios() {
-        // Arrange
-        Integer cursoId = 1;
-        List<Comentario> comentarios = Arrays.asList(new Comentario(), new Comentario());
-        when(comentarioRepo.findByCursoId(cursoId)).thenReturn(comentarios);
+        try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
+            mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            // Arrange
+            Integer cursoId = 1;
+            List<Comentario> comentarios = Arrays.asList(new Comentario(), new Comentario());
+            when(comentarioRepo.findByCursoId(cursoId)).thenReturn(comentarios);
 
-        // Act
-        List<Comentario> resultado = comentarioService.listarPorCurso(cursoId);
+            // Act
+            List<Comentario> resultado = comentarioService.listarPorCurso(cursoId);
 
-        // Assert
-        assertEquals(comentarios, resultado);
-        verify(comentarioRepo).findByCursoId(cursoId);
+            // Assert
+            assertEquals(comentarios, resultado);
+            verify(comentarioRepo).findByCursoId(cursoId);
+        }
     }
 
     @Test
     void crearComentario_CursoExiste_DeberiaCrearComentario() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.getName()).thenReturn("test@email.com");
 
             ComentarioCrear comentarioCrear = new ComentarioCrear();
             comentarioCrear.setCursoId(1);
@@ -97,7 +93,6 @@ class ComentarioServiceTest {
 
     @Test
     void crearComentario_CursoNoExiste_DeberiaLanzarExcepcion() {
-        // Arrange
         ComentarioCrear comentarioCrear = new ComentarioCrear();
         comentarioCrear.setCursoId(1);
 
@@ -115,9 +110,10 @@ class ComentarioServiceTest {
 
     @Test
     void editarComentario_ComentarioExisteYAutorizado_DeberiaEditarComentario() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.getName()).thenReturn("test@email.com");
 
             int idComentario = 1;
             ComentarioEditar comentarioEditar = new ComentarioEditar();
@@ -148,7 +144,6 @@ class ComentarioServiceTest {
 
     @Test
     void editarComentario_ComentarioNoExiste_DeberiaLanzarExcepcion() {
-        // Arrange
         int idComentario = 1;
         ComentarioEditar comentarioEditar = new ComentarioEditar();
 
@@ -166,9 +161,10 @@ class ComentarioServiceTest {
 
     @Test
     void editarComentario_UsuarioNoAutorizado_DeberiaLanzarExcepcion() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContext = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContext.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+            when(securityContext.getAuthentication()).thenReturn(authentication);
+            when(authentication.getName()).thenReturn("test@email.com");
 
             int idComentario = 1;
             ComentarioEditar comentarioEditar = new ComentarioEditar();

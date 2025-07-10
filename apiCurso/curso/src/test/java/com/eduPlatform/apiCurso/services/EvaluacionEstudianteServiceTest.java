@@ -27,9 +27,6 @@ import com.eduPlatform.apiCurso.repositories.EvaluacionEstudianteRepository;
 import com.eduPlatform.apiCurso.repositories.EvaluacionRepository;
 import reactor.core.publisher.Mono;
 
-
-
-
 @ExtendWith(MockitoExtension.class)
 class EvaluacionEstudianteServiceTest {
 
@@ -132,11 +129,13 @@ class EvaluacionEstudianteServiceTest {
             when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
             when(requestHeadersSpec.header(anyString(), anyString())).thenReturn(requestHeadersSpec);
             when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.just((UsuarioDTO) null));
+
+            // ✅ Simula que no se devuelve usuario
+            when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.empty());
 
             // Act & Assert
-            ResponseStatusException exception = assertThrows(ResponseStatusException.class, 
-                () -> service.responder(crear));
+            ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                    () -> service.responder(crear));
             assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
             assertEquals("No tienes permiso para responder evaluaciones", exception.getReason());
         }
@@ -161,8 +160,8 @@ class EvaluacionEstudianteServiceTest {
             when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.just(profesor));
 
             // Act & Assert
-            ResponseStatusException exception = assertThrows(ResponseStatusException.class, 
-                () -> service.responder(crear));
+            ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                    () -> service.responder(crear));
             assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
         }
     }
@@ -180,13 +179,21 @@ class EvaluacionEstudianteServiceTest {
             when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
             when(requestHeadersSpec.header(anyString(), anyString())).thenReturn(requestHeadersSpec);
             when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+
+            // ✅ Usuario estudiante simulado correctamente
+            UsuarioDTO usuarioEstudiante = new UsuarioDTO();
+            usuarioEstudiante.setName("Juan");
+            usuarioEstudiante.setEmail("juan@email.com");
+            usuarioEstudiante.setRoles(List.of("ESTUDIANTE"));
+
             when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.just(usuarioEstudiante));
 
+            // ✅ Evaluación no existe
             when(evaluacionRepo.findById(1)).thenReturn(Optional.empty());
 
             // Act & Assert
-            ResponseStatusException exception = assertThrows(ResponseStatusException.class, 
-                () -> service.responder(crear));
+            ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                    () -> service.responder(crear));
             assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
             assertEquals("Evaluación no encontrada", exception.getReason());
         }
@@ -214,8 +221,8 @@ class EvaluacionEstudianteServiceTest {
         when(evaluacionEstudianteRepo.findById(1)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> service.obtenerCalificacionPorId(1));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.obtenerCalificacionPorId(1));
         assertEquals("Evaluación no encontrada", exception.getMessage());
     }
 
@@ -238,8 +245,8 @@ class EvaluacionEstudianteServiceTest {
         when(evaluacionRepo.findById(1)).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, 
-            () -> service.obtenerEvaluacionPorId(1));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.obtenerEvaluacionPorId(1));
         assertEquals("Evaluación no encontrada", exception.getMessage());
     }
 }

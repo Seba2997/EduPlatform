@@ -61,33 +61,33 @@ public class UserService {
         return userRepository.findByActive(true);
     }
 
-    public User registrarComo(UserCrear user, RolNombre rolNombre){
-        try {
-
-            Rol rol = rolRepository.findByNombre(rolNombre)
+    public User registrarComo(UserCrear user, RolNombre rolNombre) {
+    try {
+        Rol rol = rolRepository.findByNombre(rolNombre)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no encontrado"));
 
-            User newUser = new User();
-            newUser.setName(user.getName());
-            newUser.setEmail(user.getEmail()); 
-            newUser.setPhone(user.getPhone());
-            newUser.setPassword(generateHash(user.getPassword()));
-            newUser.setActive(true);
-            newUser.setDateCreated(new Date());
-            newUser.setRoles(Set.of(rol));
-
-            if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El correo ya está registrado");
-}
-
-            return userRepository.save(newUser);
-            
-
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar el usuario");
         }
 
+        User newUser = new User();
+        newUser.setName(user.getName());
+        newUser.setEmail(user.getEmail());
+        newUser.setPhone(user.getPhone());
+        newUser.setPassword(generateHash(user.getPassword()));
+        newUser.setActive(true);
+        newUser.setDateCreated(new Date());
+        newUser.setRoles(Set.of(rol));
+
+        return userRepository.save(newUser);
+    } catch (ResponseStatusException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error al registrar usuario: " + e.getMessage());
     }
+}
+
+
 
     public String generateHash(String password){
         PasswordEncoder hasheador = new BCryptPasswordEncoder();
