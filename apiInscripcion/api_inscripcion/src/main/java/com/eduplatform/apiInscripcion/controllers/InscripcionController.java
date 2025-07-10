@@ -82,6 +82,7 @@ public class InscripcionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/reporte")
+    @Operation(summary = "Gestion interna del sistema", description = "Funcion para trabajar de forma interna en sistema.")
     public List<Inscripcion> obtenerTodasLasInscripcionesInterno(){
         List<Inscripcion> inscripciones = inscripcionService.obtenerTodos();
         if (inscripciones == null || inscripciones.isEmpty()) {

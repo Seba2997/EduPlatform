@@ -13,6 +13,8 @@ import com.eduplatform.apiInscripcion.models.entities.Boleta;
 import com.eduplatform.apiInscripcion.models.responses.BoletaDTO;
 import com.eduplatform.apiInscripcion.services.BoletaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/boletas")
 public class BoletaController {
@@ -22,12 +24,14 @@ public class BoletaController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/inscripcion/{inscripcionId}")
+    @Operation(summary = "Gestion interna del sistema", description = "Funcion para trabajar de forma interna en sistema.")
     public ResponseEntity<Boleta> obtenerBoletasPorInscripcionId(int inscripcionId) {
         return ResponseEntity.ok(boletaService.obtenerBoletasPorInscripcionId(inscripcionId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/reporte")
+    @Operation(summary = "Gestion interna del sistema", description = "Funcion para trabajar de forma interna en sistema.")
     public List<BoletaDTO> obtenerTodasLasBoletas() {
     List<Boleta> boletas = boletaService.obtenerTodasBoletas();
 
