@@ -146,51 +146,50 @@ class CursoServiceTest {
         verify(cursoRepo).findByNombreCurso("Java Básico");
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    void registrar_CuandoEsExitoso_DeberiaCrearCurso() {
-        try (MockedStatic<SecurityContextHolder> securityMock = mockStatic(SecurityContextHolder.class)) {
-            // Arrange
-            CursoCrear cursoCrear = new CursoCrear();
-            cursoCrear.setIdProfesor("1");
-            cursoCrear.setNombreCurso("Java Básico");
-            cursoCrear.setDescripcion("Curso de Java");
-            cursoCrear.setEstado(true);
-            cursoCrear.setPrecio(100);
-            cursoCrear.setCategoriaNombre("Programación");
+@SuppressWarnings("unchecked")
+@Test
+void registrar_CuandoEsExitoso_DeberiaCrearCurso() {
+    try (MockedStatic<SecurityContextHolder> securityMock = mockStatic(SecurityContextHolder.class)) {
+        // Arrange
+        CursoCrear cursoCrear = new CursoCrear();
+        cursoCrear.setIdProfesor("1");
+        cursoCrear.setNombreCurso("Java Básico");
+        cursoCrear.setDescripcion("Curso de Java");
+        cursoCrear.setEstado(true);
+        cursoCrear.setPrecio(100);
+        cursoCrear.setCategoriaNombre("Programación");
 
-            SecurityContext securityContext = mock(SecurityContext.class);
-            Authentication authentication = mock(Authentication.class);
-            UsuarioDTO usuarioDTO = mock(UsuarioDTO.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+        UsuarioDTO usuarioDTO = mock(UsuarioDTO.class);
 
-            securityMock.when(SecurityContextHolder::getContext).thenReturn(securityContext);
-            when(securityContext.getAuthentication()).thenReturn(authentication);
-            when(authentication.getCredentials()).thenReturn("jwt-token");
+        securityMock.when(SecurityContextHolder::getContext).thenReturn(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getCredentials()).thenReturn("jwt-token");
 
-            when(webClient.get()).thenReturn(requestHeadersUriSpec);
-            when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.header(anyString(), anyString())).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.just(usuarioDTO));
+        when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.header(anyString(), anyString())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(UsuarioDTO.class)).thenReturn(Mono.just(usuarioDTO));
 
-            when(usuarioDTO.getId()).thenReturn(1);
-            when(usuarioDTO.getName()).thenReturn("Juan Pérez");
-            when(usuarioDTO.getEmail()).thenReturn("juan@test.com");
-            when(usuarioDTO.tieneRol("PROFESOR")).thenReturn(true);
+        // NECESARIO PARA MATCHING CON findById(...)
+        when(usuarioDTO.getId()).thenReturn(1);
+        when(usuarioDTO.tieneRol("PROFESOR")).thenReturn(true);
 
-            when(profesorRepo.findById(1)).thenReturn(Optional.of(profesor));
-            when(categoriaRepo.findByNombreCategoriaIgnoreCase("Programación")).thenReturn(categoria);
-            when(categoriaRepo.save(any(Categoria.class))).thenReturn(categoria);
-            when(cursoRepo.save(any(Curso.class))).thenReturn(curso);
+        when(profesorRepo.findById(1)).thenReturn(Optional.of(profesor));
+        when(categoriaRepo.findByNombreCategoriaIgnoreCase("Programación")).thenReturn(categoria);
+        when(categoriaRepo.save(any(Categoria.class))).thenReturn(categoria);
+        when(cursoRepo.save(any(Curso.class))).thenReturn(curso);
 
-            // Act
-            Curso resultado = cursoService.registrar(cursoCrear);
+        // Act
+        Curso resultado = cursoService.registrar(cursoCrear);
 
-            // Assert
-            assertNotNull(resultado);
-            verify(cursoRepo).save(any(Curso.class));
-        }
+        // Assert
+        assertNotNull(resultado);
+        verify(cursoRepo).save(any(Curso.class));
     }
+}
 
     @SuppressWarnings("unchecked")
     @Test

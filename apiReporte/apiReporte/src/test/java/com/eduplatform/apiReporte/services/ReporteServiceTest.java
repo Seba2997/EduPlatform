@@ -17,16 +17,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
-
-
+import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
 class ReporteServiceTest {
@@ -63,16 +63,15 @@ class ReporteServiceTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     void setUp() {
-        when(webClientBuilder.defaultHeader(anyString(), anyString())).thenReturn(webClientBuilder);
-        when(webClientBuilder.build()).thenReturn(webClient);
-        when(webClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        lenient().when(webClientBuilder.defaultHeader(anyString(), anyString())).thenReturn(webClientBuilder);
+        lenient().when(webClientBuilder.build()).thenReturn(webClient);
+        lenient().when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        lenient().when(requestHeadersUriSpec.uri(anyString())).thenReturn(requestHeadersSpec);
+        lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
     }
 
     @Test
     void crearReporteDesdeApi_ConContenidoValido_DeberiaCrearReporte() {
-        // Arrange
         ReporteCrear dto = new ReporteCrear();
         dto.setTitulo("Test Reporte");
         dto.setContenido("Contenido de prueba");
@@ -84,10 +83,8 @@ class ReporteServiceTest {
 
         when(reporteRepo.save(any(Reporte.class))).thenReturn(reporteGuardado);
 
-        // Act
         Reporte resultado = reporteService.crearReporteDesdeApi(dto);
 
-        // Assert
         assertNotNull(resultado);
         assertEquals("Test Reporte", resultado.getTitulo());
         verify(reporteRepo).save(any(Reporte.class));
@@ -95,12 +92,10 @@ class ReporteServiceTest {
 
     @Test
     void crearReporteDesdeApi_ConContenidoVacio_DeberiaLanzarExcepcion() {
-        // Arrange
         ReporteCrear dto = new ReporteCrear();
         dto.setTitulo("Test Reporte");
         dto.setContenido("");
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> reporteService.crearReporteDesdeApi(dto)
@@ -112,12 +107,10 @@ class ReporteServiceTest {
 
     @Test
     void crearReporteDesdeApi_ConContenidoNull_DeberiaLanzarExcepcion() {
-        // Arrange
         ReporteCrear dto = new ReporteCrear();
         dto.setTitulo("Test Reporte");
         dto.setContenido(null);
 
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
             () -> reporteService.crearReporteDesdeApi(dto)
@@ -128,7 +121,6 @@ class ReporteServiceTest {
 
     @Test
     void generarReporteInscripciones_ConDatosValidos_DeberiaGenerarReporte() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -139,22 +131,18 @@ class ReporteServiceTest {
             );
 
             List<Boleta> boletas = Arrays.asList(
-                createBoleta(1L, 1L, "BOL001", 1000, "2023-01-02")
+                createBoleta(1L, 1L, "1", 1000, "2023-01-02")
             );
 
-            when(responseSpec.bodyToFlux(Inscripcion.class))
-                .thenReturn(Flux.fromIterable(inscripciones));
-            when(responseSpec.bodyToFlux(Boleta.class))
-                .thenReturn(Flux.fromIterable(boletas));
+            when(responseSpec.bodyToFlux(Inscripcion.class)).thenReturn(Flux.fromIterable(inscripciones));
+            when(responseSpec.bodyToFlux(Boleta.class)).thenReturn(Flux.fromIterable(boletas));
 
             Reporte reporteGuardado = new Reporte();
             reporteGuardado.setId(1);
             when(reporteRepo.save(any(Reporte.class))).thenReturn(reporteGuardado);
 
-            // Act
             Reporte resultado = reporteService.generarReporteInscripciones();
 
-            // Assert
             assertNotNull(resultado);
             verify(reporteRepo).save(any(Reporte.class));
             verify(webClient, times(2)).get();
@@ -163,16 +151,13 @@ class ReporteServiceTest {
 
     @Test
     void generarReporteInscripciones_SinInscripciones_DeberiaLanzarExcepcion() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
             when(authentication.getCredentials()).thenReturn("test-token");
 
-            when(responseSpec.bodyToFlux(Inscripcion.class))
-                .thenReturn(Flux.fromIterable(Collections.emptyList()));
+            when(responseSpec.bodyToFlux(Inscripcion.class)).thenReturn(Flux.fromIterable(Collections.emptyList()));
 
-            // Act & Assert
             RuntimeException exception = assertThrows(
                 RuntimeException.class,
                 () -> reporteService.generarReporteInscripciones()
@@ -184,7 +169,6 @@ class ReporteServiceTest {
 
     @Test
     void generarReporteInscripciones_ConBoletasNull_DeberiaGenerarReporteSinBoletas() {
-        // Arrange
         try (MockedStatic<SecurityContextHolder> mockedSecurityContextHolder = mockStatic(SecurityContextHolder.class)) {
             mockedSecurityContextHolder.when(SecurityContextHolder::getContext).thenReturn(securityContext);
             when(securityContext.getAuthentication()).thenReturn(authentication);
@@ -194,19 +178,15 @@ class ReporteServiceTest {
                 createInscripcion(1L, "Juan Perez", "juan@test.com", "Java Course", "2023-01-01")
             );
 
-            when(responseSpec.bodyToFlux(Inscripcion.class))
-                .thenReturn(Flux.fromIterable(inscripciones));
-            when(responseSpec.bodyToFlux(Boleta.class))
-                .thenReturn(Flux.fromIterable(Collections.emptyList()));
+            when(responseSpec.bodyToFlux(Inscripcion.class)).thenReturn(Flux.fromIterable(inscripciones));
+            when(responseSpec.bodyToFlux(Boleta.class)).thenReturn(Flux.fromIterable(Collections.emptyList()));
 
             Reporte reporteGuardado = new Reporte();
             reporteGuardado.setId(1);
             when(reporteRepo.save(any(Reporte.class))).thenReturn(reporteGuardado);
 
-            // Act
             Reporte resultado = reporteService.generarReporteInscripciones();
 
-            // Assert
             assertNotNull(resultado);
             verify(reporteRepo).save(any(Reporte.class));
         }
@@ -219,7 +199,6 @@ class ReporteServiceTest {
         inscripcion.setNombreCurso(curso);
         inscripcion.setFechaInscripcion(LocalDate.parse(fecha));
         return inscripcion;
-
     }
 
     private Boleta createBoleta(Long id, Long inscripcionId, String numero, int precio, String fecha) {
